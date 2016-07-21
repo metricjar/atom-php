@@ -1,0 +1,13 @@
+{
+	"name": "IronSourceAtom/atom-php",
+	"description": "Official ironSource.atom SDK for the PHP programming language",
+	"license": "MIT",
+	"authors": [{
+		"name": "IronSource",
+		"email": "kirill.bokhanov@ironsrc.com"
+	}],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.3.0"
+	}
+}
