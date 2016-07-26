@@ -21,6 +21,12 @@ class Atom {
     }
 
     public function putEvent($stream, $data) {
+        if(empty($stream)) {
+            throw new \InvalidArgumentException('Param $strem must not neither null nor empty string!');
+        }
+        if($data == null) {
+            throw new \InvalidArgumentException('Param $data must not be null!');
+        }
 
         $contentArray = array(
             'table' => $stream,
@@ -32,6 +38,13 @@ class Atom {
     }
 
     public function putEvents($stream, $data) {
+
+        if(empty($stream)) {
+            throw new \InvalidArgumentException('Param $strem must not neither null nor empty string!');
+        }
+        if(!is_array(json_decode($data))) {
+            throw new \InvalidArgumentException('Param $data must not be valid JSON of array!');
+        }
 
         $contentArray = array(
             'table' => $stream,
@@ -68,7 +81,7 @@ class Atom {
     }
     
     private function makeAuth($data) {
-        
+
         return hash_hmac('sha256', $data, $this ->authKey);
     }
 
