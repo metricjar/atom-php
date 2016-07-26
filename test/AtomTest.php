@@ -2,11 +2,10 @@
 /**
  */
 
+require_once '../vendor/autoload.php';
+use IronSourceAtom\Atom;
 
-namespace IronSourceAtom;
-
-
-class AtomTest extends \PHPUnit_Framework_TestCase
+class AtomTest extends PHPUnit_Framework_TestCase
 {
 
     /**
