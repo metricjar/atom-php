@@ -1,16 +1,23 @@
 <?php
 /**
-
  */
 
 
 namespace IronSourceAtom;
+
 use PHPUnit\Framework\TestCase;
 
-class AtomTest extends TestCase {
+class AtomTest extends TestCase
+{
 
-    public function testAtomConstruct() {
-        $this->assertTrue(true);
+    /**
+     * @covers Atom::__construct
+     * @expectedException InvalidArgumentException
+     */
+    public function testAtomConstructNullAuth()
+    {
+        new Atom(null);
     }
+
 
 }

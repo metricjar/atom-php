@@ -5,13 +5,15 @@
 namespace IronSourceAtom;
 
 
-class Atom {
+class Atom
+{
     private $authKey;
     private $url;
 
-    public function __construct($authKey="", $url="http://track.atom-data.io/") {
+    public function __construct($authKey = "", $url = "http://track.atom-data.io/")
+    {
 
-        if($authKey == null) {
+        if ($authKey == null) {
             throw new \InvalidArgumentException('Param $auth must not be null!');
         }
 
@@ -20,53 +22,59 @@ class Atom {
 
     }
 
-    public function putEvent($stream, $data) {
-        if(empty($stream)) {
+    public function putEvent($stream, $data)
+    {
+
+        if (empty($stream)) {
             throw new \InvalidArgumentException('Param $strem must not neither null nor empty string!');
         }
-        if($data == null) {
+
+        if ($data == null) {
             throw new \InvalidArgumentException('Param $data must not be null!');
         }
 
         $contentArray = array(
             'table' => $stream,
-            'data' => $data,
-            'auth' => $this->makeAuth($data)
+            'data'  => $data,
+            'auth'  => $this->makeAuth($data)
         );
 
         $this->post(json_encode($contentArray), $this->url);
     }
 
-    public function putEvents($stream, $data) {
+    public function putEvents($stream, $data)
+    {
 
-        if(empty($stream)) {
+        if (empty($stream)) {
             throw new \InvalidArgumentException('Param $strem must not neither null nor empty string!');
         }
-        if(!is_array(json_decode($data))) {
+
+        if (!is_array(json_decode($data))) {
             throw new \InvalidArgumentException('Param $data must not be valid JSON of array!');
         }
 
         $contentArray = array(
             'table' => $stream,
-            'data' => $data,
-            'bulk' => true,
-            'auth' => $this->makeAuth($data)
+            'data'  => $data,
+            'bulk'  => true,
+            'auth'  => $this->makeAuth($data)
 
         );
-        $bulkUrl = $this->url.'bulk';
+        $bulkUrl = $this->url . 'bulk';
         $this->post(json_encode($contentArray), $bulkUrl);
     }
 
-    private function post($content, $url) {
+    private function post($content, $url)
+    {
 
-        $headers =  'Content-Type: application/json,
+        $headers = 'Content-Type: application/json,
                     x-ironsource-atom-sdk-type: atom-php,
                     x-ironsource-atom-sdk-version: 1.0.0';
 
         $options = array(
             'http' => array(
-                'header' => $headers,
-                'method' => 'POST',
+                'header'  => $headers,
+                'method'  => 'POST',
                 'content' => $content
             )
         );
@@ -79,10 +87,11 @@ class Atom {
         var_dump($result);
 
     }
-    
-    private function makeAuth($data) {
 
-        return hash_hmac('sha256', $data, $this ->authKey);
+    private function makeAuth($data)
+    {
+
+        return hash_hmac('sha256', $data, $this->authKey);
     }
 
 }
