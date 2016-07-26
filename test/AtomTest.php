@@ -4,11 +4,9 @@
 
 
 namespace IronSourceAtom;
-require_once '/vendor/autoload.php';
 
-use PHPUnit\Framework\TestCase;
 
-class AtomTest extends TestCase
+class AtomTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
