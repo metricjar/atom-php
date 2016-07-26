@@ -11,6 +11,6 @@ install:
   - composer install
 
 script:
--pwd
--ls
--phpunit test/AtomTest.php
+  - pwd
+  - ls
+  - phpunit test/AtomTest.php
