@@ -6,3 +6,6 @@ php:
 
 sudo: false
 
+env:
+- COMPOSER_OPTS=""
+- COMPOSER_OPTS="--prefer-lowest"
