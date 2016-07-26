@@ -3,11 +3,9 @@ language: php
 php:
   - 5.6
 
-sudo: false
-
 env:
-- COMPOSER_OPTS=""
-- COMPOSER_OPTS="--prefer-lowest"
+  - COMPOSER_OPTS=""
+  - COMPOSER_OPTS="--prefer-lowest"
 
 install:
   - 'if [ $(phpenv version-name) != "hhvm" ]; then echo "xdebug.overload_var_dump = 0" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi'
@@ -15,4 +13,4 @@ install:
 
 script:
   - make test
-- if [ -z "$COMPOSER_OPTS" ]; then make package; fi
+  - if [ -z "$COMPOSER_OPTS" ]; then make package; fi
