@@ -3,8 +3,8 @@
  */
 
 
-namespace IronSourceAtom;
 
+include '../lib/Atom.php';
 
 class AtomTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
      */
     public function testAtomConstructNullAuth()
     {
-        new Atom(null);
+        new IronSourceAtom\Atom(null);
     }
 
 
