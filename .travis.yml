@@ -9,3 +9,7 @@ sudo: false
 env:
 - COMPOSER_OPTS=""
 - COMPOSER_OPTS="--prefer-lowest"
+
+install:
+  - 'if [ $(phpenv version-name) != "hhvm" ]; then echo "xdebug.overload_var_dump = 0" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi'
+  - travis_retry composer update $COMPOSER_OPTS --no-interaction --prefer-source
