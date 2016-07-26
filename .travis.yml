@@ -10,4 +10,7 @@ install:
   - composer update
   - composer install
 
-script: phpunit test/AtomTest.php
+script:
+-pwd
+-ls
+-phpunit test/AtomTest.php
