@@ -66,4 +66,4 @@ You can use our [example][example-url] for sending data to Atom:
 [coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-php/badge.svg?branch=feature%2Fisa-454
 [coveralls-url]: https://coveralls.io/github/ironSource/atom-php/?branch=feature%2Fisa-454
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
-[docs-url]: https://ironsource.github.io/atom-ruby/
+[docs-url]: https://ironsource.github.io/atom-php/

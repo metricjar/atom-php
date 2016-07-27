@@ -5,11 +5,20 @@
 namespace IronSourceAtom;
 
 
+/**
+ * Class Atom low level API class, supports putEvent() and putEvents();
+ * @package IronSourceAtom
+ */
 class Atom
 {
     private $authKey;
     private $url;
 
+    /**
+     * Atom constructor.
+     * @param string $authKey
+     * @param string $url
+     */
     public function __construct($authKey = "", $url = "http://track.atom-data.io/")
     {
 
@@ -22,6 +31,13 @@ class Atom
 
     }
 
+    /**
+     * Writes a single data event into ironSource.atom delivery stream.
+     * To write multiple data records into a delivery stream, use putEvents().
+     * @param $stream the name of Atom stream to send data
+     * @param $data data in JSON format to be send
+     * @return response from server
+     */
     public function putEvent($stream, $data)
     {
 
@@ -39,10 +55,17 @@ class Atom
             'auth'  => $this->makeAuth($data)
         );
 
-        $this->post(json_encode($contentArray), $this->url);
+        return $this->post(json_encode($contentArray), $this->url);
     }
     // @codeCoverageIgnoreEnd
 
+    /**
+     * Writes a multiple data events into ironSource.atom delivery stream.
+     * To write  single data event into a delivery stream, use putEvent().
+     * @param $stream the name of Atom stream to send data
+     * @param $data data in JSON format to be send. Must be a valid JSON of array
+     * @return response from server
+     */
     public function putEvents($stream, $data)
     {
 
@@ -62,7 +85,7 @@ class Atom
 
         );
         $bulkUrl = $this->url . 'bulk';
-        $this->post(json_encode($contentArray), $bulkUrl);
+        return $this->post(json_encode($contentArray), $bulkUrl);
     }
     // @codeCoverageIgnoreEnd
 
@@ -89,7 +112,7 @@ class Atom
         if ($result === FALSE) { /* Handle error */
         }
 
-        var_dump($result);
+        return $result;
 
     }
     /**
