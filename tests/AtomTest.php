@@ -22,7 +22,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
      */
     public function testPutEventNullStream()
     {
-        $atom = new Atom('');
+        $atom = new Atom("dd");
         $atom->putEvent(null, 'fff');
     }
 
@@ -31,7 +31,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
      */
     public function testPutEventEmptyStream()
     {
-        $atom = new Atom('');
+        $atom = new Atom("dd");
         $atom->putEvent('', 'fff');
     }
 

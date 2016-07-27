@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap=".bootstrap.php">
-<testsuites>
-    <testsuite name="atom">
-        <file>tests/AtomTest.php</file>
-    </testsuite>
-</testsuites>
+    <testsuites>
+        <testsuite name="atom">
+            <file>tests/AtomTest.php</file>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <file>lib/Atom.php</file>
+        </whitelist>
+    </filter>
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
         <log type="coverage-php" target="build/cov/coverage.cov"/>
