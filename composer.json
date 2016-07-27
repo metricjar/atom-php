@@ -1,18 +1,26 @@
 {
-	"name": "IronSourceAtom/atom-php",
-    "type": "library",
-	"description": "Official ironSource.atom SDK for the PHP programming language",
-	"license": "MIT",
-	"authors": [{
-		"name": "IronSource",
-		"email": "kirill.bokhanov@ironsrc.com"
-	}],
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.6",
-		"phpunit/phpunit": "5.4.4"
-	},
-	"autoload": {
-		"psr-4": {"IronSourceAtom\\": "lib"}
-	}
+  "name": "IronSourceAtom/atom-php",
+  "type": "library",
+  "description": "Official ironSource.atom SDK for the PHP programming language",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "IronSource",
+      "email": "kirill.bokhanov@ironsrc.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.4",
+    "satooshi/php-coveralls": "~1.0",
+    "phpunit/phpcov": "2.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "IronSourceAtom\\": "lib"
+    }
+  }
 }

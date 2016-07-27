@@ -2,15 +2,12 @@ language: php
 
 php:
   - 5.6
-
-env:
-  - COMPOSER_OPTS="--prefer-lowest"
-
 install:
-  - composer update
-  - composer install
-
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install --dev --no-interaction
 script:
-  - pwd
-  - ls
-  - phpunit test/AtomTest.php
+  - mkdir -p build/logs
+  - php vendor/bin/phpunit -c phpunit.xml.dist
+
+after_success:
+  - travis_retry php vendor/bin/coveralls -v
