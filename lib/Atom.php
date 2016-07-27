@@ -21,11 +21,6 @@ class Atom
      */
     public function __construct($authKey = "", $url = "http://track.atom-data.io/")
     {
-
-        if ($authKey == null) {
-            throw new \InvalidArgumentException('Param $auth must not be null!');
-        }
-
         $this->authKey = $authKey;
         $this->url = $url;
 
@@ -34,9 +29,9 @@ class Atom
     /**
      * Writes a single data event into ironSource.atom delivery stream.
      * To write multiple data records into a delivery stream, use putEvents().
-     * @param $stream the name of Atom stream to send data
-     * @param $data data in JSON format to be send
-     * @return response from server
+     * @param string $stream  the name of Atom stream to send data
+     * @param string $data  data in JSON format to be send
+     * @return string response from server
      */
     public function putEvent($stream, $data)
     {
@@ -62,9 +57,9 @@ class Atom
     /**
      * Writes a multiple data events into ironSource.atom delivery stream.
      * To write  single data event into a delivery stream, use putEvent().
-     * @param $stream the name of Atom stream to send data
-     * @param $data data in JSON format to be send. Must be a valid JSON of array
-     * @return response from server
+     * @param string $stream  the name of Atom stream to send data
+     * @param string $data  data in JSON format to be send. Must be a valid JSON of array
+     * @return string response from server
      */
     public function putEvents($stream, $data)
     {
