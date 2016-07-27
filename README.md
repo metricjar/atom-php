@@ -58,12 +58,12 @@ $ php composer.phar install
 You can use our [example][example-url] for sending data to Atom:
 
 
-[example-url]: https://github.com/ironSource/atom-ruby/tree/feature/ISA-359/example
-[license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
+[example-url]: https://github.com/ironSource/atom-php/tree/feature/isa-454/example
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-url]: LICENSE.txt
-[travis-image]: https://travis-ci.org/ironSource/atom-ruby.svg?branch=master
-[travis-url]: https://travis-ci.org/ironSource/atom-ruby
-[coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-ruby/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/ironSource/atom-ruby?branch=master
+[travis-image]: https://travis-ci.org/ironSource/atom-php.svg?branch=feature%2Fisa-454
+[travis-url]: https://travis-ci.org/ironSource/atom-php
+[coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-php/badge.svg?branch=feature%2Fisa-454
+[coveralls-url]: https://coveralls.io/github/ironSource/atom-php/?branch=feature%2Fisa-454
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://ironsource.github.io/atom-ruby/
