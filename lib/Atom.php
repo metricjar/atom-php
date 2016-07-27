@@ -32,7 +32,7 @@ class Atom
         if ($data == null) {
             throw new \InvalidArgumentException('Param $data must not be null!');
         }
-
+    // @codeCoverageIgnoreStart
         $contentArray = array(
             'table' => $stream,
             'data'  => $data,
@@ -41,6 +41,7 @@ class Atom
 
         $this->post(json_encode($contentArray), $this->url);
     }
+    // @codeCoverageIgnoreEnd
 
     public function putEvents($stream, $data)
     {
@@ -52,7 +53,7 @@ class Atom
         if (!is_array(json_decode($data))) {
             throw new \InvalidArgumentException('Param $data must not be valid JSON of array!');
         }
-
+    // @codeCoverageIgnoreStart
         $contentArray = array(
             'table' => $stream,
             'data'  => $data,
@@ -63,7 +64,11 @@ class Atom
         $bulkUrl = $this->url . 'bulk';
         $this->post(json_encode($contentArray), $bulkUrl);
     }
+    // @codeCoverageIgnoreEnd
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function post($content, $url)
     {
 
@@ -87,7 +92,9 @@ class Atom
         var_dump($result);
 
     }
-
+    /**
+     * @codeCoverageIgnore
+     */
     private function makeAuth($data)
     {
 
