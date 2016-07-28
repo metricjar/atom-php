@@ -57,6 +57,7 @@ $ php composer.phar install
  $atom = new Atom("");
  $atom->putEvent("ibtest", "{name: iron, last_name: source}");
  $atom->putEvents("ibtest", "[{name: iron, last_name: source}, {name: iron1, last_name: source1}]");
+
 ?>
 ```
 
