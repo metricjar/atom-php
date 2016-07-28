@@ -14,18 +14,24 @@ Atom-Ruby is the official ironSource.atom SDK for the PHP programming language.
 ## Installation
 Using Composer is the recommended way to install the Atom SDK for PHP.
 
-    Install Composer
+ 1)  Install Composer
 
+```bash
     curl -sS https://getcomposer.org/installer | php
+```
 
-    Run the Composer command to install the latest stable version of the SDK:
-
+ 2)  Run the Composer command to install the latest stable version of the SDK:
+    
+```bash
     php composer.phar require ironsourceatom/atom-php
+```
 
-    Require Composer's autoloader:
+ 3)  Require Composer's autoloader:
 
+```php
     <?php
     require 'vendor/autoload.php';
+```
 
 You can find out more on how to install Composer, configure autoloading, and other best-practices for defining dependencies at getcomposer.org.
 
@@ -37,6 +43,7 @@ Also you can add the following into your composer.json
 ```
 Then execute
 ```bash
+$ php composer.phar update
 $ php composer.phar install
 ```
 ### Using low level API methods
@@ -50,7 +57,7 @@ $ php composer.phar install
  $atom = new Atom("");
  $atom->putEvent("ibtest", "{name: iron, last_name: source}");
  $atom->putEvents("ibtest", "[{name: iron, last_name: source}, {name: iron1, last_name: source1}]");
-
+?>
 ```
 
 ### Example
