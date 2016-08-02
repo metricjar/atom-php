@@ -2,10 +2,11 @@
   "name": "IronSourceAtom/atom-php",
   "type": "library",
   "description": "Official ironSource.atom SDK for the PHP programming language",
+  "version": "",
   "license": "MIT",
   "authors": [
     {
-      "name": "IronSource",
+      "name": "Kirill Bokhanov",
       "email": "kirill.bokhanov@ironsrc.com"
     }
   ],
