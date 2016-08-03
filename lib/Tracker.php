@@ -117,6 +117,9 @@ class Tracker
     public function flush()
     {
         $this->flush_now = true;
+        $this->dbAdapter->getEvents("", "");
+        $this->dbAdapter->deleteEvents("stream1", 163);
+        $this->dbAdapter->getEvents("", "");
     }
 
 }
@@ -129,3 +132,4 @@ $tracker->track("first message", "stream2");
 $tracker->track("fourth message", "stream1");
 $tracker->track("second message", "stream2");
 $tracker->track("first message", "stream3");
+$tracker->flush();

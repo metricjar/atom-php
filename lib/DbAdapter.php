@@ -31,7 +31,7 @@ class DbAdapter
 
         $insertStmt = $this->db->prepare("INSERT INTO " . self::REPORTS_TABLE .
             " (" . self::KEY_STREAM . ", " . self::KEY_DATA . ", " . self::KEY_CREATED_AT . "
-            ) VALUES (':stream', ':data', ':created_at')");
+            ) VALUES (:stream, :data, :created_at)");
         $insertStmt->bindValue(':stream', $stream, SQLITE3_TEXT);
         $insertStmt->bindValue(':data', $data, SQLITE3_TEXT);
         $insertStmt->bindValue(':created_at', $this->milliseconds());
@@ -56,8 +56,39 @@ class DbAdapter
 
     public function getEvents($stream, $limit)
     {
+        $events = array();
+        $event_ids = array();
+        $stmt = $this->db->prepare("SELECT * FROM " . self::REPORTS_TABLE);
+        $result = $stmt->execute();
+        while ($row = $result->fetchArray()) {
+            array_push($event_ids, $row[self::REPORTS_TABLE . '_id']);
+            array_push($events, $row[self::KEY_DATA]);
+        }
+        $lastId = end($event_ids);
+        $batch = new Batch($lastId, $events);
+        var_dump($batch);
+
+        return $batch;
 
     }
+
+    /**
+     * Remove events from records table that related to the given "table/destination"
+     * and with an id that less than or equal to the "lastId"
+     * @param stream
+     * @param lastId
+     * @return the number of rows affected
+     */
+    public function deleteEvents($stream, $lastId)
+    {
+
+        $deleteStmt = $this->db->prepare("DELETE FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream AND " . self::REPORTS_TABLE . "_id <= :event_id");
+        $deleteStmt->bindParam(':stream', $stream);
+        $deleteStmt->bindParam(':event_id', $lastId);
+        $deleteStmt->execute();
+
+    }
+
 
     public function create()
     {
@@ -74,6 +105,7 @@ class DbAdapter
 
         $indexQuery = "CREATE INDEX IF NOT EXISTS time_idx ON " . self::REPORTS_TABLE . " (" . self::KEY_CREATED_AT . ");";
         $ret = $this->db->exec($indexQuery);
+
 
     }
 
