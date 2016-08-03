@@ -10,6 +10,7 @@ namespace IronSourceAtom;
 
 require 'Atom.php';
 require 'EventWorker.php';
+require 'DbAdapter.php';
 
 class Tracker
 {
@@ -21,6 +22,7 @@ class Tracker
     private $flush_now;
     private $eventPool;
     private $eventWorker;
+    private $dbAdapter;
 
     /**
      * +     * Tracker constructor.
@@ -31,6 +33,8 @@ class Tracker
         $this->url = $url;
         $this->streams = array();
         $this->eventWorker = new EventWorker($this->streams);
+        $this->dbAdapter = new DbAdapter();
+        $this->dbAdapter->create();
 
     }
 
@@ -96,14 +100,15 @@ class Tracker
      */
     public function track($data, $stream)
     {
-        if (!array_key_exists($stream, $this->streams)) {
-            $this->streams[$stream] = array($data);
-        } else {
-            array_push($this->streams[$stream], $data);
-        }
-
-        print ("tracker called");
-        var_export($this->streams);
+//        if (!array_key_exists($stream, $this->streams)) {
+//            $this->streams[$stream] = array($data);
+//        } else {
+//            array_push($this->streams[$stream], $data);
+//        }
+//
+//        print ("tracker called");
+//        var_export($this->streams);
+        $this->dbAdapter->addEvent($stream, $data);
     }
 
     /**
