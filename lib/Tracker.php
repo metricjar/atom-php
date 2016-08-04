@@ -116,9 +116,10 @@ class Tracker
         $data = json_encode($batch->getEvents());
 
         Logger::log("Flushing into stream " . $stream. " data: ". $data, $this->isDebug);
+
         $result = $this->atom->putEvents($stream, $data);
 
-        Logger::log("Response  is: ".$result, $this->isDebug);
+        Logger::log("Response is: ".$result->message, $this->isDebug);
 
         $this->dbAdapter->deleteEvents($stream, $batch->getLastId());
     }

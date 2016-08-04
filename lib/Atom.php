@@ -4,6 +4,7 @@
 
 namespace IronSourceAtom;
 
+require 'Response.php';
 
 /**
  * Class Atom low level API class, supports putEvent() and putEvents();
@@ -29,9 +30,9 @@ class Atom
     /**
      * Writes a single data event into ironSource.atom delivery stream.
      * To write multiple data records into a delivery stream, use putEvents().
-     * @param string $stream  the name of Atom stream to send data
-     * @param string $data  data in JSON format to be send
-     * @return string response from server
+     * @param string $stream the name of Atom stream to send data
+     * @param string $data data in JSON format to be send
+     * @return Response response from server
      */
     public function putEvent($stream, $data)
     {
@@ -43,7 +44,7 @@ class Atom
         if ($data == null) {
             throw new \InvalidArgumentException('Param $data must not be null!');
         }
-    // @codeCoverageIgnoreStart
+        // @codeCoverageIgnoreStart
         $contentArray = array(
             'table' => $stream,
             'data'  => $data,
@@ -57,9 +58,9 @@ class Atom
     /**
      * Writes a multiple data events into ironSource.atom delivery stream.
      * To write  single data event into a delivery stream, use putEvent().
-     * @param string $stream  the name of Atom stream to send data
-     * @param string $data  data in JSON format to be send. Must be a valid JSON of array
-     * @return string response from server
+     * @param string $stream the name of Atom stream to send data
+     * @param string $data data in JSON format to be send. Must be a valid JSON of array
+     * @return Response from server
      */
     public function putEvents($stream, $data)
     {
@@ -71,7 +72,7 @@ class Atom
         if (!is_array(json_decode($data))) {
             throw new \InvalidArgumentException('Param $data must not be valid JSON of array!');
         }
-    // @codeCoverageIgnoreStart
+        // @codeCoverageIgnoreStart
         $contentArray = array(
             'table' => $stream,
             'data'  => $data,
@@ -101,6 +102,9 @@ class Atom
     // @codeCoverageIgnoreEnd
 
     /**
+     * @param $content
+     * @param $url
+     * @return Response
      * @codeCoverageIgnore
      */
     private function post($content, $url)
@@ -118,14 +122,27 @@ class Atom
             )
         );
 
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        if ($result === FALSE) { /* Handle error */
-        }
+        set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
+            // error was suppressed with the @-operator
+            if (0 === error_reporting()) {
+                return false;
+            }
 
-        return $result;
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
+
+        $context = stream_context_create($options);
+        try {
+            file_get_contents($url, true, $context);
+        } catch (\ErrorException $e) {
+           //todo print something about error
+
+        }
+        $resultHeaders = $this->parseHeaders($http_response_header);
+        return new Response($resultHeaders[0], $resultHeaders['response_code']);
 
     }
+
     /**
      * @codeCoverageIgnore
      */
@@ -133,6 +150,25 @@ class Atom
     {
 
         return hash_hmac('sha256', $data, $this->authKey);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    private function parseHeaders($headers)
+    {
+        $head = array();
+        foreach ($headers as $k => $v) {
+            $t = explode(':', $v, 2);
+            if (isset($t[1]))
+                $head[trim($t[0])] = trim($t[1]);
+            else {
+                $head[] = $v;
+                if (preg_match("#HTTP/[0-9\.]+\s+([0-9]+)#", $v, $out))
+                    $head['response_code'] = intval($out[1]);
+            }
+        }
+        return $head;
     }
 
 }
