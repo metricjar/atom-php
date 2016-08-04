@@ -82,6 +82,22 @@ class Atom
         $bulkUrl = $this->url . 'bulk';
         return $this->post(json_encode($contentArray), $bulkUrl);
     }
+
+    /**
+     * @param string $authKey
+     */
+    public function setAuthKey($authKey)
+    {
+        $this->authKey = $authKey;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
     // @codeCoverageIgnoreEnd
 
     /**

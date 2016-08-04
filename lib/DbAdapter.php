@@ -59,7 +59,7 @@ class DbAdapter
         $events = array();
         $event_ids = array();
         $stmt = $this->db->prepare("SELECT * FROM " . self::REPORTS_TABLE
-            . " WHERE ". self::KEY_STREAM. " = :stream ORDER BY ". self::KEY_CREATED_AT . " ASC"
+            . " WHERE " . self::KEY_STREAM . " = :stream ORDER BY " . self::KEY_CREATED_AT . " ASC"
             . " LIMIT :limit");
         $stmt->bindParam(':stream', $stream);
         $stmt->bindParam(':limit', $limit);
@@ -70,8 +70,6 @@ class DbAdapter
         }
         $lastId = end($event_ids);
         $batch = new Batch($lastId, $events);
-        var_dump($batch);
-
         return $batch;
 
     }
@@ -125,8 +123,7 @@ class DbAdapter
         $countEventsStmt->bindParam(':stream', $stream);
         $eventsCount = $countEventsStmt->execute();
         $row = $eventsCount->fetchArray();
-        var_dump($row);
-        return  $row['NUM'];
+        return $row['NUM'];
     }
 }
 

@@ -9,32 +9,28 @@
 namespace IronSourceAtom;
 
 require 'Atom.php';
-require 'EventWorker.php';
 require 'DbAdapter.php';
+require 'Logger.php';
 
 class Tracker
 {
     private $taskWorkersCount = 20;
     private $taskPoolSize = 10000;
-    private $url;
-    private $authKey = '';
-    private $streams;
     private $flush_now;
-    private $eventPool;
     private $dbAdapter;
     private $bulkSizeByte = 65536;
     private $bulkSize = 4;
     private $flushInterval = 10;
+    private $isDebug = false;
+
+
 
     /**
      * +     * Tracker constructor.
      * +     * @param string $url
      * +     */
-    public function __construct($url = "http://track.atom-data.io/")
-    {   $this->atom = new Atom('I40iwPPOsG3dfWX30labriCg9HqMfL');
-        $this->url = $url;
-        $this->streams = array();
-        $this->eventWorker = new EventWorker($this->streams);
+    public function __construct($auth="",$url = "http://track.atom-data.io/")
+    {   $this->atom = new Atom($auth, $url);
         $this->dbAdapter = new DbAdapter();
         $this->dbAdapter->create();
 
@@ -86,7 +82,7 @@ class Tracker
      */
     public function setUrl($url)
     {
-        $this->url = $url;
+        $this->atom->setUrl($url);
     }
 
     /**
@@ -94,7 +90,7 @@ class Tracker
      */
     public function setAuthKey($authKey)
     {
-        $this->authKey = $authKey;
+        $this->atom->setAuthKey($authKey);
     }
 
     /**
@@ -103,14 +99,6 @@ class Tracker
      */
     public function track($data, $stream)
     {
-//        if (!array_key_exists($stream, $this->streams)) {
-//            $this->streams[$stream] = array($data);
-//        } else {
-//            array_push($this->streams[$stream], $data);
-//        }
-//
-//        print ("tracker called");
-//        var_export($this->streams);
         $this->dbAdapter->addEvent($stream, $data);
 
         while ($this->isToFlush($stream)) {
@@ -126,8 +114,12 @@ class Tracker
         $this->flush_now = true;
         $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
         $data = json_encode($batch->getEvents());
-        $this->atom->putEvents($stream, $data);
-        print ("I flush stream " . $stream);
+
+        Logger::log("Flushing into stream " . $stream. " data: ". $data, $this->isDebug);
+        $result = $this->atom->putEvents($stream, $data);
+
+        Logger::log("Response  is: ".$result, $this->isDebug);
+
         $this->dbAdapter->deleteEvents($stream, $batch->getLastId());
     }
 
@@ -139,9 +131,19 @@ class Tracker
         return false;
     }
 
+    /**
+     * @param boolean $isDebug
+     */
+    public function setDebug($isDebug)
+    {
+        $this->isDebug = $isDebug;
+    }
+
 }
 
 $tracker = new Tracker();
+$tracker->setAuthKey('I40iwPPOsG3dfWX30labriCg9HqMfL');
+$tracker->setDebug(true);
 $tracker->track("first message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("second message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("third message", "sdkdev_sdkdev.public.atomtestkey");
@@ -149,7 +151,6 @@ $tracker->track("first message", "stream2");
 $tracker->track("fourth message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("fifth message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("second message", "stream2");
-$tracker->track("third message", "stream2");
 $tracker->track("first message", "stream3");
 $tracker->track("sixth message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("eighth message", "sdkdev_sdkdev.public.atomtestkey");
