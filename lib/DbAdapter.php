@@ -41,8 +41,8 @@ class DbAdapter
 //        $countStreamsStmt->bindValue(':stream', $stream);
 //        $streamsCount = $countStreamsStmt->execute();
 
-        $countEventsStmt = $this->db->prepare("SELECT COUNT(*) FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= ?");
-        $countEventsStmt->bindValue('s', $stream);
+        $countEventsStmt = $this->db->prepare("SELECT COUNT(*) FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream");
+        $countEventsStmt->bindParam(':stream', $stream);
         $eventsCount = $countEventsStmt->execute();
 
 //        if ($streamsCount == 0)
@@ -58,7 +58,11 @@ class DbAdapter
     {
         $events = array();
         $event_ids = array();
-        $stmt = $this->db->prepare("SELECT * FROM " . self::REPORTS_TABLE);
+        $stmt = $this->db->prepare("SELECT * FROM " . self::REPORTS_TABLE
+            . " WHERE ". self::KEY_STREAM. " = :stream ORDER BY ". self::KEY_CREATED_AT . " ASC"
+            . " LIMIT :limit");
+        $stmt->bindParam(':stream', $stream);
+        $stmt->bindParam(':limit', $limit);
         $result = $stmt->execute();
         while ($row = $result->fetchArray()) {
             array_push($event_ids, $row[self::REPORTS_TABLE . '_id']);
@@ -113,6 +117,16 @@ class DbAdapter
     {
         $mt = explode(' ', microtime());
         return $mt[1] * 1000 + round($mt[0] * 1000);
+    }
+
+    public function countEvents($stream)
+    {
+        $countEventsStmt = $this->db->prepare("SELECT COUNT(*) AS NUM FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream");
+        $countEventsStmt->bindParam(':stream', $stream);
+        $eventsCount = $countEventsStmt->execute();
+        $row = $eventsCount->fetchArray();
+        var_dump($row);
+        return  $row['NUM'];
     }
 }
 

@@ -21,15 +21,17 @@ class Tracker
     private $streams;
     private $flush_now;
     private $eventPool;
-    private $eventWorker;
     private $dbAdapter;
+    private $bulkSizeByte = 65536;
+    private $bulkSize = 4;
+    private $flushInterval = 10;
 
     /**
      * +     * Tracker constructor.
      * +     * @param string $url
      * +     */
     public function __construct($url = "http://track.atom-data.io/")
-    {
+    {   $this->atom = new Atom('I40iwPPOsG3dfWX30labriCg9HqMfL');
         $this->url = $url;
         $this->streams = array();
         $this->eventWorker = new EventWorker($this->streams);
@@ -38,12 +40,13 @@ class Tracker
 
     }
 
+
     /**
-     * +     * @param int $bulkSizeByte
-     * +     */
+     * @param int $bulkSizeByte
+     */
     public function setBulkSizeByte($bulkSizeByte)
     {
-        $this->eventWorker->setBulkSizeByte($bulkSizeByte);
+        $this->bulkSizeByte = $bulkSizeByte;
     }
 
     /**
@@ -51,7 +54,15 @@ class Tracker
      */
     public function setBulkSize($bulkSize)
     {
-        $this->eventWorker->setBulkSize($bulkSize);
+        $this->bulkSize = $bulkSize;
+    }
+
+    /**
+     * @param int $flushInterval
+     */
+    public function setFlushInterval($flushInterval)
+    {
+        $this->flushInterval = $flushInterval;
     }
 
     /**
@@ -68,14 +79,6 @@ class Tracker
     public function setTaskPoolSize($taskPoolSize)
     {
         $this->taskPoolSize = $taskPoolSize;
-    }
-
-    /**
-     * @param int $flushInterval
-     */
-    public function setFlushInterval($flushInterval)
-    {
-        $this->eventWorker->setFlushInterval($flushInterval);
     }
 
     /**
@@ -109,27 +112,46 @@ class Tracker
 //        print ("tracker called");
 //        var_export($this->streams);
         $this->dbAdapter->addEvent($stream, $data);
+
+        while ($this->isToFlush($stream)) {
+            $this->flush($stream);
+        }
     }
 
     /**
      *
      */
-    public function flush()
+    public function flush($stream)
     {
         $this->flush_now = true;
-        $this->dbAdapter->getEvents("", "");
-        $this->dbAdapter->deleteEvents("stream1", 163);
-        $this->dbAdapter->getEvents("", "");
+        $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
+        $data = json_encode($batch->getEvents());
+        $this->atom->putEvents($stream, $data);
+        print ("I flush stream " . $stream);
+        $this->dbAdapter->deleteEvents($stream, $batch->getLastId());
+    }
+
+    private function isToFlush($stream)
+    {
+        if ($this->dbAdapter->countEvents($stream) >= $this->bulkSize) {
+            return true;
+        }
+        return false;
     }
 
 }
 
 $tracker = new Tracker();
-$tracker->track("first message", "stream1");
-$tracker->track("second message", "stream1");
-$tracker->track("third message", "stream1");
+$tracker->track("first message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("second message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("third message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("first message", "stream2");
-$tracker->track("fourth message", "stream1");
+$tracker->track("fourth message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("fifth message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("second message", "stream2");
+$tracker->track("third message", "stream2");
 $tracker->track("first message", "stream3");
-$tracker->flush();
+$tracker->track("sixth message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("eighth message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("ninth message", "sdkdev_sdkdev.public.atomtestkey");
+

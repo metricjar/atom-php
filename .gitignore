@@ -5,4 +5,7 @@ composer.lock
 build
 atom-php.iml
 docs/
+copydocs.shironsourceatom.db
+lib/ironsourceatom.db
+ironsourceatom.db
 copydocs.sh
