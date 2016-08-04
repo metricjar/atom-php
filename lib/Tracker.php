@@ -24,13 +24,13 @@ class Tracker
     private $isDebug = false;
 
 
-
     /**
      * +     * Tracker constructor.
      * +     * @param string $url
      * +     */
-    public function __construct($auth="",$url = "http://track.atom-data.io/")
-    {   $this->atom = new Atom($auth, $url);
+    public function __construct($auth = "", $url = "http://track.atom-data.io/")
+    {
+        $this->atom = new Atom($auth, $url);
         $this->dbAdapter = new DbAdapter();
         $this->dbAdapter->create();
 
@@ -115,13 +115,14 @@ class Tracker
         $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
         $data = json_encode($batch->getEvents());
 
-        Logger::log("Flushing into stream " . $stream. " data: ". $data, $this->isDebug);
+        Logger::log("Flushing into stream " . $stream . " data: " . $data, $this->isDebug);
 
         $result = $this->atom->putEvents($stream, $data);
 
-        Logger::log("Response is: ".$result->message, $this->isDebug);
-
-        $this->dbAdapter->deleteEvents($stream, $batch->getLastId());
+        Logger::log("Response is: " . $result->message, $this->isDebug);
+        if ($result->code < 500) {
+            $this->dbAdapter->deleteEvents($stream, $batch->getLastId());
+        }
     }
 
     private function isToFlush($stream)
