@@ -8,7 +8,6 @@
 
 namespace IronSourceAtom;
 
-require 'DbHandler.php';
 
 class DbAdapter
 {
@@ -165,4 +164,13 @@ class Batch
     {
         return $this->events;
     }
+}
+
+class DbHandler extends \SQLite3
+{
+    function __construct()
+    {
+        $this->open('ironsourceatom.db');
+    }
+
 }
