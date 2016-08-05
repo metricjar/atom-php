@@ -20,7 +20,7 @@ class Tracker
     private $dbAdapter;
     private $bulkSizeByte = 65536;
     private $bulkSize = 4;
-    private $flushInterval = 10;
+    private $flushInterval = 10000;
     private $isDebug = false;
 
 
@@ -119,7 +119,7 @@ class Tracker
         $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
         $data = json_encode($batch->getEvents());
 
-        Logger::log("Flushing into stream " . $stream . " data: " . $data, $this->isDebug);
+        Logger::log("Into stream " . $stream . " data: " . $data, $this->isDebug);
 
         $result = $this->atom->putEvents($stream, $data);
 
@@ -135,10 +135,17 @@ class Tracker
     private function isToFlush($stream)
     {
         if ($this->dbAdapter->getByteSize($stream) >= $this->bulkSizeByte) {
+            Logger::log("Flushing by bytesize ", $this->isDebug);
             return true;
         }
 
         if ($this->dbAdapter->countEvents($stream) >= $this->bulkSize) {
+            Logger::log("Flushing by bulksize ", $this->isDebug);
+            return true;
+        }
+
+        if ($this->dbAdapter->milliseconds() - $this->dbAdapter->getOldestCreationTime($stream) >= $this->flushInterval) {
+            Logger::log("Flushing by timer ", $this->isDebug);
             return true;
         }
         return false;
@@ -168,4 +175,6 @@ $tracker->track("first message", "stream3");
 $tracker->track("sixth message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("eighth message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("ninth message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("tenth message", "sdkdev_sdkdev.public.atomtestkey");
+$tracker->track("eleventh message", "sdkdev_sdkdev.public.atomtestkey");
 

@@ -108,7 +108,7 @@ class DbAdapter
 
     }
 
-    function milliseconds()
+    public function milliseconds()
     {
         $mt = explode(' ', microtime());
         return $mt[1] * 1000 + round($mt[0] * 1000);
@@ -174,6 +174,18 @@ class DbAdapter
         $streamsCount = $result['NUM'];
         Logger::log('Numbers of streams ' . $stream . " in table " . self::STREAMS_TABLE . " is " . $streamsCount, false);
         return $streamsCount;
+    }
+
+    /**
+     * @param $stream
+     * @return integer
+     */
+    public function getOldestCreationTime($stream){
+        $timeStmt = $this->db->prepare("SELECT MIN(". self::KEY_CREATED_AT.")  AS start_time FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+        $timeStmt->bindValue(':stream', $stream);
+        $raw = $timeStmt->execute();
+        $result = $raw->fetchArray();
+        return $result['start_time'];
     }
 }
 
