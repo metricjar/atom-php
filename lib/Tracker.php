@@ -16,7 +16,6 @@ class Tracker
 {
     private $taskWorkersCount = 20;
     private $taskPoolSize = 10000;
-    private $flush_now;
     private $dbAdapter;
     private $bulkSizeByte = 65536;
     private $bulkSize = 4;
@@ -108,22 +107,22 @@ class Tracker
         $this->dbAdapter->addEvent($stream, $data, $authKey);
 
         if ($this->isToFlush($stream)) {
-            $this->flushStream($stream);
+            $this->flushStream($stream, $authKey);
         }
     }
 
     /**
      * @param $stream
+     * @param string $authKey
      */
-    private function flushStream($stream)
+    private function flushStream($stream, $authKey)
     {
-        $this->flush_now = true;
         $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
         $data = json_encode($batch->getEvents());
 
         Logger::log("Data to flush: " . $data, $this->isDebug);
 
-        $result = $this->atom->putEvents($stream, $data);
+        $result = $this->atom->putEvents($stream, $data, $authKey);
 
         Logger::log("Response is: " . $result->message, $this->isDebug);
         if ($result->code < 500) {
@@ -134,6 +133,10 @@ class Tracker
         }
     }
 
+    /**
+     * @param $stream
+     * @return bool
+     */
     private function isToFlush($stream)
     {
         if ($this->dbAdapter->getByteSize($stream) >= $this->bulkSizeByte) {
@@ -161,11 +164,21 @@ class Tracker
         $this->isDebug = $isDebug;
     }
 
+    public function flush(){
+        $stream = $this->dbAdapter->getStreamsInfo();
+        foreach ($stream as $entity){
+            Logger::log("\nFlushing by client demand into stream: " . $entity->streamName, $this->isDebug);
+            $this->flushStream($entity->streamName, $entity->authKey);
+        }
+
+    }
+
 }
 
 $tracker = new Tracker();
 $tracker->setAuthKey('I40iwPPOsG3dfWX30labriCg9HqMfL');
 $tracker->setDebug(true);
+$tracker->flush();
 $tracker->track("first message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("second message", "sdkdev_sdkdev.public.atomtestkey");
 $tracker->track("third message", "sdkdev_sdkdev.public.atomtestkey");
