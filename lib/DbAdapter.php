@@ -16,7 +16,8 @@ class DbAdapter
     const KEY_STREAM = "stream_name";
     const KEY_CREATED_AT = "created_at";
     const STREAMS_TABLE = "streams";
-    const KEY_TOKEN = "token";
+    const KEY_AUTH_KEY = "auth_key";
+    const KEY_BYTE_SIZE = "byte_size";
     private $db;
 
     public function __construct()
@@ -24,7 +25,7 @@ class DbAdapter
         $this->db = new DbHandler();
     }
 
-    public function addEvent($stream, $data)
+    public function addEvent($stream, $data, $authKey)
     {
 
 
@@ -36,18 +37,21 @@ class DbAdapter
         $insertStmt->bindValue(':created_at', $this->milliseconds());
         $insertStmt->execute();
 
-//        $countStreamsStmt = $this->db->prepare("SELECT COUNT(*) FROM ".self::STREAMS_TABLE. "WHERE ".self::KEY_STREAM . " = :stream");
-//        $countStreamsStmt->bindValue(':stream', $stream);
-//        $streamsCount = $countStreamsStmt->execute();
+        $countStreamsStmt = $this->db->prepare("SELECT COUNT(*)  AS NUM FROM ".self::STREAMS_TABLE. " WHERE ".self::KEY_STREAM . " = :stream");
+        $countStreamsStmt->bindValue(':stream', $stream);
+        $raw = $countStreamsStmt->execute();
+        $result=$raw->fetchArray();
+        $streamsCount = $result['NUM'];
+        Logger::log('Numbers of streams '. $stream. " in table " .self::STREAMS_TABLE." is ". $streamsCount, true);
 
         $countEventsStmt = $this->db->prepare("SELECT COUNT(*) FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream");
         $countEventsStmt->bindParam(':stream', $stream);
         $eventsCount = $countEventsStmt->execute();
 
-//        if ($streamsCount == 0)
-//        {
-//            $this->addStream(streamData);
-//        }
+        if ($streamsCount == 0)
+        {
+            $this->addStream($stream, $authKey, 0);
+        }
 
         return $eventsCount;
 
@@ -101,7 +105,7 @@ class DbAdapter
 
 
         $tableQuery = "CREATE TABLE IF NOT EXISTS " . self::STREAMS_TABLE . " (" . self::STREAMS_TABLE . "_id INTEGER PRIMARY KEY AUTOINCREMENT," .
-            self::KEY_STREAM . " STRING NOT NULL UNIQUE, " . self::KEY_TOKEN . " STRING NOT NULL);";
+            self::KEY_STREAM . " STRING NOT NULL UNIQUE, " . self::KEY_AUTH_KEY . " STRING NOT NULL, ". self::KEY_BYTE_SIZE. " INTEGER);";
         $ret = $this->db->exec($tableQuery);
 
         $indexQuery = "CREATE INDEX IF NOT EXISTS time_idx ON " . self::REPORTS_TABLE . " (" . self::KEY_CREATED_AT . ");";
@@ -123,6 +127,17 @@ class DbAdapter
         $eventsCount = $countEventsStmt->execute();
         $row = $eventsCount->fetchArray();
         return $row['NUM'];
+    }
+
+    private function addStream($stream, $authKey, $byteSize)
+    {
+        $insertStmt = $this->db->prepare("INSERT INTO " . self::STREAMS_TABLE .
+            " (" . self::KEY_STREAM . ", " . self::KEY_AUTH_KEY . ", " . self::KEY_BYTE_SIZE . "
+            ) VALUES (:stream, :auth, :byte_size)");
+        $insertStmt->bindValue(':stream', $stream, SQLITE3_TEXT);
+        $insertStmt->bindValue(':auth', $authKey, SQLITE3_TEXT);
+        $insertStmt->bindValue(':byte_size', $byteSize, SQLITE3_INTEGER);
+        $insertStmt->execute();
     }
 }
 

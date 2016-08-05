@@ -32,10 +32,15 @@ class Atom
      * To write multiple data records into a delivery stream, use putEvents().
      * @param string $stream the name of Atom stream to send data
      * @param string $data data in JSON format to be send
+     * @param string $authKey
      * @return Response response from server
      */
-    public function putEvent($stream, $data)
+
+    public function putEvent($stream, $data, $authKey = "")
     {
+        if ($authKey == null) {
+            $authKey = $this->authKey;
+        }
 
         if (empty($stream)) {
             throw new \InvalidArgumentException('Param $strem must not neither null nor empty string!');
@@ -48,7 +53,7 @@ class Atom
         $contentArray = array(
             'table' => $stream,
             'data'  => $data,
-            'auth'  => $this->makeAuth($data)
+            'auth'  => $this->makeAuth($data, $authKey)
         );
 
         return $this->post(json_encode($contentArray), $this->url);
@@ -60,10 +65,14 @@ class Atom
      * To write  single data event into a delivery stream, use putEvent().
      * @param string $stream the name of Atom stream to send data
      * @param string $data data in JSON format to be send. Must be a valid JSON of array
+     * @param string $authKey
      * @return Response from server
      */
-    public function putEvents($stream, $data)
+    public function putEvents($stream, $data, $authKey = "")
     {
+        if (empty($authKey)) {
+            $authKey = $this->authKey;
+        }
 
         if (empty($stream)) {
             throw new \InvalidArgumentException('Param $strem must not neither null nor empty string!');
@@ -77,11 +86,19 @@ class Atom
             'table' => $stream,
             'data'  => $data,
             'bulk'  => true,
-            'auth'  => $this->makeAuth($data)
+            'auth'  => $this->makeAuth($data, $authKey)
 
         );
         $bulkUrl = $this->url . 'bulk';
         return $this->post(json_encode($contentArray), $bulkUrl);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthKey()
+    {
+        return $this->authKey;
     }
 
     /**
@@ -135,7 +152,7 @@ class Atom
         try {
             file_get_contents($url, true, $context);
         } catch (\ErrorException $e) {
-           //todo print something about error
+            //todo print something about error
 
         }
         $resultHeaders = $this->parseHeaders($http_response_header);
@@ -146,10 +163,10 @@ class Atom
     /**
      * @codeCoverageIgnore
      */
-    private function makeAuth($data)
+    private function makeAuth($data, $authKey)
     {
 
-        return hash_hmac('sha256', $data, $this->authKey);
+        return hash_hmac('sha256', $data, $authKey);
     }
 
     /**

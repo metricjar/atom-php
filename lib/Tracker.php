@@ -97,11 +97,15 @@ class Tracker
      * @param $data
      * @param $stream
      */
-    public function track($data, $stream)
+    public function track($data, $stream, $authKey="")
     {
-        $this->dbAdapter->addEvent($stream, $data);
+        if (empty($authKey)) {
+            $authKey = $this->atom->getAuthKey();
+        }
 
-        while ($this->isToFlush($stream)) {
+        $this->dbAdapter->addEvent($stream, $data, $authKey);
+
+        if ($this->isToFlush($stream)) {
             $this->flush($stream);
         }
     }
