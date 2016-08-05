@@ -2,7 +2,7 @@
   "name": "IronSourceAtom/atom-php",
   "type": "library",
   "description": "Official ironSource.atom SDK for the PHP programming language",
-  "version": "",
+  "version": "1.1.0",
   "license": "MIT",
   "authors": [
     {
