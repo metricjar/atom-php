@@ -145,7 +145,6 @@ class DbAdapter
         $raw = $getSizeStmt->execute();
         $result = $raw->fetchArray();
         $byte_size = $result[self::KEY_BYTE_SIZE];
-        Logger::log('Byte size of events in stream ' . $stream . " = " . $byte_size, true);
         return $byte_size;
     }
 
@@ -172,7 +171,6 @@ class DbAdapter
         $raw = $countStreamsStmt->execute();
         $result = $raw->fetchArray();
         $streamsCount = $result['NUM'];
-        Logger::log('Numbers of streams ' . $stream . " in table " . self::STREAMS_TABLE . " is " . $streamsCount, false);
         return $streamsCount;
     }
 
@@ -180,8 +178,9 @@ class DbAdapter
      * @param $stream
      * @return integer
      */
-    public function getOldestCreationTime($stream){
-        $timeStmt = $this->db->prepare("SELECT MIN(". self::KEY_CREATED_AT.")  AS start_time FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+    public function getOldestCreationTime($stream)
+    {
+        $timeStmt = $this->db->prepare("SELECT MIN(" . self::KEY_CREATED_AT . ")  AS start_time FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
         $timeStmt->bindValue(':stream', $stream);
         $raw = $timeStmt->execute();
         $result = $raw->fetchArray();

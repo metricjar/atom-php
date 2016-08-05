@@ -25,12 +25,13 @@ class Tracker
 
 
     /**
-     * +     * Tracker constructor.
-     * +     * @param string $url
-     * +     */
-    public function __construct($auth = "", $url = "http://track.atom-data.io/")
+     * Tracker constructor.
+     * @param string $url
+     * @param string $authKey
+     */
+    public function __construct($authKey = "", $url = "http://track.atom-data.io/")
     {
-        $this->atom = new Atom($auth, $url);
+        $this->atom = new Atom($authKey, $url);
         $this->dbAdapter = new DbAdapter();
         $this->dbAdapter->create();
 
@@ -96,8 +97,9 @@ class Tracker
     /**
      * @param $data
      * @param $stream
+     * @param string $authKey
      */
-    public function track($data, $stream, $authKey="")
+    public function track($data, $stream, $authKey = "")
     {
         if (empty($authKey)) {
             $authKey = $this->atom->getAuthKey();
@@ -106,20 +108,20 @@ class Tracker
         $this->dbAdapter->addEvent($stream, $data, $authKey);
 
         if ($this->isToFlush($stream)) {
-            $this->flush($stream);
+            $this->flushStream($stream);
         }
     }
 
     /**
-     *
+     * @param $stream
      */
-    public function flush($stream)
+    private function flushStream($stream)
     {
         $this->flush_now = true;
         $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
         $data = json_encode($batch->getEvents());
 
-        Logger::log("Into stream " . $stream . " data: " . $data, $this->isDebug);
+        Logger::log("Data to flush: " . $data, $this->isDebug);
 
         $result = $this->atom->putEvents($stream, $data);
 
@@ -129,23 +131,23 @@ class Tracker
             $byteSize = $this->dbAdapter->getByteSize($stream);
             $byteSize -= $batch->getByteSize();
             $this->dbAdapter->updateByteSize($stream, $byteSize);
-         }
+        }
     }
 
     private function isToFlush($stream)
     {
         if ($this->dbAdapter->getByteSize($stream) >= $this->bulkSizeByte) {
-            Logger::log("Flushing by bytesize ", $this->isDebug);
+            Logger::log("\nFlushing by bulkSizeByte into stream: " . $stream, $this->isDebug);
             return true;
         }
 
         if ($this->dbAdapter->countEvents($stream) >= $this->bulkSize) {
-            Logger::log("Flushing by bulksize ", $this->isDebug);
+            Logger::log("\nFlushing by bulkSize into stream: " . $stream, $this->isDebug);
             return true;
         }
 
         if ($this->dbAdapter->milliseconds() - $this->dbAdapter->getOldestCreationTime($stream) >= $this->flushInterval) {
-            Logger::log("Flushing by timer ", $this->isDebug);
+            Logger::log("\nFlushing by timer into stream: " . $stream, $this->isDebug);
             return true;
         }
         return false;
