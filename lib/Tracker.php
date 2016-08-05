@@ -126,11 +126,18 @@ class Tracker
         Logger::log("Response is: " . $result->message, $this->isDebug);
         if ($result->code < 500) {
             $this->dbAdapter->deleteEvents($stream, $batch->getLastId());
-        }
+            $byteSize = $this->dbAdapter->getByteSize($stream);
+            $byteSize -= $batch->getByteSize();
+            $this->dbAdapter->updateByteSize($stream, $byteSize);
+         }
     }
 
     private function isToFlush($stream)
     {
+        if ($this->dbAdapter->getByteSize($stream) >= $this->bulkSizeByte) {
+            return true;
+        }
+
         if ($this->dbAdapter->countEvents($stream) >= $this->bulkSize) {
             return true;
         }

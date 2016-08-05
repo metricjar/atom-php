@@ -37,23 +37,15 @@ class DbAdapter
         $insertStmt->bindValue(':created_at', $this->milliseconds());
         $insertStmt->execute();
 
-        $countStreamsStmt = $this->db->prepare("SELECT COUNT(*)  AS NUM FROM ".self::STREAMS_TABLE. " WHERE ".self::KEY_STREAM . " = :stream");
-        $countStreamsStmt->bindValue(':stream', $stream);
-        $raw = $countStreamsStmt->execute();
-        $result=$raw->fetchArray();
-        $streamsCount = $result['NUM'];
-        Logger::log('Numbers of streams '. $stream. " in table " .self::STREAMS_TABLE." is ". $streamsCount, true);
+        $streamsCount = $this->countStreams($stream);
 
-        $countEventsStmt = $this->db->prepare("SELECT COUNT(*) FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream");
-        $countEventsStmt->bindParam(':stream', $stream);
-        $eventsCount = $countEventsStmt->execute();
-
-        if ($streamsCount == 0)
-        {
+        if ($streamsCount == 0) {
             $this->addStream($stream, $authKey, 0);
         }
 
-        return $eventsCount;
+        $byte_size = $this->getByteSize($stream);
+        $byte_size += mb_strlen($data, '8bit');
+        $this->updateByteSize($stream, $byte_size);
 
     }
 
@@ -67,12 +59,14 @@ class DbAdapter
         $stmt->bindParam(':stream', $stream);
         $stmt->bindParam(':limit', $limit);
         $result = $stmt->execute();
+        $byteSize = 0;
         while ($row = $result->fetchArray()) {
             array_push($event_ids, $row[self::REPORTS_TABLE . '_id']);
             array_push($events, $row[self::KEY_DATA]);
+            $byteSize += mb_strlen($row[self::KEY_DATA], '8bit');
         }
         $lastId = end($event_ids);
-        $batch = new Batch($lastId, $events);
+        $batch = new Batch($lastId, $byteSize, $events);
         return $batch;
 
     }
@@ -105,7 +99,7 @@ class DbAdapter
 
 
         $tableQuery = "CREATE TABLE IF NOT EXISTS " . self::STREAMS_TABLE . " (" . self::STREAMS_TABLE . "_id INTEGER PRIMARY KEY AUTOINCREMENT," .
-            self::KEY_STREAM . " STRING NOT NULL UNIQUE, " . self::KEY_AUTH_KEY . " STRING NOT NULL, ". self::KEY_BYTE_SIZE. " INTEGER);";
+            self::KEY_STREAM . " STRING NOT NULL UNIQUE, " . self::KEY_AUTH_KEY . " STRING NOT NULL, " . self::KEY_BYTE_SIZE . " INTEGER);";
         $ret = $this->db->exec($tableQuery);
 
         $indexQuery = "CREATE INDEX IF NOT EXISTS time_idx ON " . self::REPORTS_TABLE . " (" . self::KEY_CREATED_AT . ");";
@@ -139,6 +133,48 @@ class DbAdapter
         $insertStmt->bindValue(':byte_size', $byteSize, SQLITE3_INTEGER);
         $insertStmt->execute();
     }
+
+    /**
+     * @param $stream
+     * @return integer
+     */
+    public function getByteSize($stream)
+    {
+        $getSizeStmt = $this->db->prepare("SELECT " . self::KEY_BYTE_SIZE . " FROM " . self::STREAMS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+        $getSizeStmt->bindValue(':stream', $stream);
+        $raw = $getSizeStmt->execute();
+        $result = $raw->fetchArray();
+        $byte_size = $result[self::KEY_BYTE_SIZE];
+        Logger::log('Byte size of events in stream ' . $stream . " = " . $byte_size, true);
+        return $byte_size;
+    }
+
+    /**
+     * @param $stream
+     * @param $byte_size
+     */
+    public function updateByteSize($stream, $byte_size)
+    {
+        $updateStmt = $this->db->prepare("UPDATE " . self::STREAMS_TABLE . " SET " . self::KEY_BYTE_SIZE . " = :byte_size WHERE " . self::KEY_STREAM . " = :stream");
+        $updateStmt->bindValue(':byte_size', $byte_size);
+        $updateStmt->bindValue(':stream', $stream);
+        $updateStmt->execute();
+    }
+
+    /**
+     * @param $stream
+     * @return mixed
+     */
+    private function countStreams($stream)
+    {
+        $countStreamsStmt = $this->db->prepare("SELECT COUNT(*)  AS NUM FROM " . self::STREAMS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+        $countStreamsStmt->bindValue(':stream', $stream);
+        $raw = $countStreamsStmt->execute();
+        $result = $raw->fetchArray();
+        $streamsCount = $result['NUM'];
+        Logger::log('Numbers of streams ' . $stream . " in table " . self::STREAMS_TABLE . " is " . $streamsCount, false);
+        return $streamsCount;
+    }
 }
 
 
@@ -154,15 +190,22 @@ class Batch
     private $lastId;
 
     /**
+     * @var integer
+     */
+    private $byteSize;
+
+    /**
      * @var string
      */
     private $events;
 
-    public function __construct($lastId, $events)
+    public function __construct($lastId, $byteSize, $events)
     {
         $this->lastId = $lastId;
+        $this->byteSize = $byteSize;
         $this->events = $events;
     }
+
 
     /**
      * @return string
@@ -170,6 +213,14 @@ class Batch
     public function getLastId()
     {
         return $this->lastId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getByteSize()
+    {
+        return $this->byteSize;
     }
 
     /**
