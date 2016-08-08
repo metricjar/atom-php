@@ -186,19 +186,21 @@ class DbAdapter
         $result = $raw->fetchArray();
         return $result['start_time'];
     }
-    
-    public function getStreamsInfo(){
+
+    public function getStreamsInfo()
+    {
         $streamsInfo = array();
         $stmt = $this->db->prepare("SELECT * FROM " . self::STREAMS_TABLE);
         $result = $stmt->execute();
         while ($row = $result->fetchArray()) {
-            $entity = new Stream($row[self::KEY_STREAM],$row[self::KEY_AUTH_KEY]);
+            $entity = new Stream($row[self::KEY_STREAM], $row[self::KEY_AUTH_KEY]);
             array_push($streamsInfo, $entity);
         }
         return $streamsInfo;
-        
+
     }
 }
+
 class Stream
 {
     public $streamName;
