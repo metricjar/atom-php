@@ -98,7 +98,7 @@ class Tracker
      * @param string $authKey optional, pre shared IronSourceAtom stream auth key.
      * If nothing given uses authKey given in constructor
      */
-    public function track($stream, $data,  $authKey = "")
+    public function track($stream, $data, $authKey = "")
     {
         if (empty($authKey)) {
             $authKey = $this->atom->getAuthKey();
@@ -171,10 +171,10 @@ class Tracker
     {
         $stream = $this->dbAdapter->getStreamsInfo();
         foreach ($stream as $entity) {
-            if($this->dbAdapter->countEvents($entity->streamName)>0){
-            Logger::log("\nFlushing by client demand into stream: " . $entity->streamName, $this->isDebug);
-            $this->flushStream($entity->streamName, $entity->authKey);
-        }
+            if ($this->dbAdapter->countEvents($entity->streamName) > 0) {
+                Logger::log("\nFlushing by client demand into stream: " . $entity->streamName, $this->isDebug);
+                $this->flushStream($entity->streamName, $entity->authKey);
+            }
         }
 
     }
