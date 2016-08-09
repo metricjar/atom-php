@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
+ * Implements CRUD methods to work with SQLite db
  * User: kirill.bokhanov
  * Date: 8/2/16
  * Time: 4:48 PM
@@ -20,11 +20,19 @@ class DbAdapter
     const KEY_BYTE_SIZE = "byte_size";
     private $db;
 
+    /**
+     * DbAdapter constructor.
+     */
     public function __construct()
     {
         $this->db = new DbHandler();
     }
 
+    /**
+     * @param string $stream IronSourceAtom stream
+     * @param string $data data to store
+     * @param string $authKey IronSourceAtom stream authKey
+     */
     public function addEvent($stream, $data, $authKey)
     {
 
@@ -49,6 +57,11 @@ class DbAdapter
 
     }
 
+    /**
+     * @param string $stream IronSourceAtom stream
+     * @param integer $limit max number of return events in result batch
+     * @return Batch
+     */
     public function getEvents($stream, $limit)
     {
         $events = array();
@@ -74,9 +87,8 @@ class DbAdapter
     /**
      * Remove events from records table that related to the given "table/destination"
      * and with an id that less than or equal to the "lastId"
-     * @param stream
-     * @param lastId
-     * @return the number of rows affected
+     * @param $stream
+     * @param $lastId
      */
     public function deleteEvents($stream, $lastId)
     {
@@ -88,7 +100,9 @@ class DbAdapter
 
     }
 
-
+    /**
+     * Used at the moment of creation IronSourceAtom database
+     */
     public function create()
     {
         print("Creating the IronSourceAtom database");
@@ -108,12 +122,21 @@ class DbAdapter
 
     }
 
+    /**
+     * Returns current timestamp in milliseconds
+     * @return integer
+     */
     public function milliseconds()
     {
         $mt = explode(' ', microtime());
         return $mt[1] * 1000 + round($mt[0] * 1000);
     }
 
+    /**
+     * Conts number of records in db for given stream
+     * @param string $stream
+     * @return integer
+     */
     public function countEvents($stream)
     {
         $countEventsStmt = $this->db->prepare("SELECT COUNT(*) AS NUM FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream");
@@ -123,6 +146,12 @@ class DbAdapter
         return $row['NUM'];
     }
 
+    /**
+     * Adds new stream record into table streams
+     * @param string $stream
+     * @param string $authKey
+     * @param integer $byteSize
+     */
     private function addStream($stream, $authKey, $byteSize)
     {
         $insertStmt = $this->db->prepare("INSERT INTO " . self::STREAMS_TABLE .
@@ -135,6 +164,7 @@ class DbAdapter
     }
 
     /**
+     * Returns bytesize of data in given stream
      * @param $stream
      * @return integer
      */
@@ -187,6 +217,9 @@ class DbAdapter
         return $result['start_time'];
     }
 
+    /**
+     * @return array of Streams
+     */
     public function getStreamsInfo()
     {
         $streamsInfo = array();
@@ -201,6 +234,10 @@ class DbAdapter
     }
 }
 
+/**
+ * Class Stream represents stream-authKey pair map
+ * @package IronSourceAtom
+ */
 class Stream
 {
     public $streamName;
@@ -220,9 +257,12 @@ class Stream
 
 }
 
+
 /**
+ * Class Batch
  * Batch is just a syntactic-sugar way to store bulk of events
  * with its lastId to acknowledge them later
+ * @package IronSourceAtom
  */
 class Batch
 {
@@ -274,6 +314,10 @@ class Batch
     }
 }
 
+/**
+ * Class DbHandler
+ * @package IronSourceAtom
+ */
 class DbHandler extends \SQLite3
 {
     function __construct()

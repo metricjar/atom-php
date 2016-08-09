@@ -1,6 +1,4 @@
 <?php
-/**
- */
 
 namespace IronSourceAtom;
 
@@ -17,8 +15,9 @@ class Atom
 
     /**
      * Atom constructor.
-     * @param string $authKey
-     * @param string $url
+     * @param string $authKey optional, if nothing given uses empty string as key
+     * @param string $url optional, url of IronSourceAtom server.
+     * If nothing given uses http://track.atom-data.io/
      */
     public function __construct($authKey = "", $url = "http://track.atom-data.io/")
     {
@@ -32,7 +31,8 @@ class Atom
      * To write multiple data records into a delivery stream, use putEvents().
      * @param string $stream the name of Atom stream to send data
      * @param string $data data in JSON format to be send
-     * @param string $authKey
+     * @param string $authKey optional, pre shared IronSourceAtom stream auth key.
+     * If nothing given uses authKey given in Atom constructor
      * @return Response response from server
      */
 
@@ -63,9 +63,10 @@ class Atom
     /**
      * Writes a multiple data events into ironSource.atom delivery stream.
      * To write  single data event into a delivery stream, use putEvent().
-     * @param string $stream the name of Atom stream to send data
+     * @param string $stream the name of IronSourceAtom stream to send data
      * @param string $data data in JSON format to be send. Must be a valid JSON of array
-     * @param string $authKey
+     * @param string $authKey optional, pre shared IronSourceAtom stream auth key.
+     * If nothing given uses authKey given in Atom constructor
      * @return Response from server
      */
     public function putEvents($stream, $data, $authKey = "")
@@ -152,7 +153,6 @@ class Atom
         try {
             file_get_contents($url, true, $context);
         } catch (\ErrorException $e) {
-            //todo print something about error
 
         }
         $resultHeaders = $this->parseHeaders($http_response_header);
@@ -170,6 +170,9 @@ class Atom
     }
 
     /**
+     * Parses HTTP response header. Converts it from string to appositive array
+     * @param $headers
+     * @return array
      * @codeCoverageIgnore
      */
     private function parseHeaders($headers)

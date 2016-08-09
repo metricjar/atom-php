@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: kirill.bokhanov
- * Date: 8/1/16
- * Time: 3:35 PM
- */
 
 namespace IronSourceAtom;
 
@@ -12,6 +6,11 @@ require 'Atom.php';
 require 'DbAdapter.php';
 require 'Logger.php';
 
+/**
+ * Class Tracker high level API class, support track() and flush() methods
+ * Aggregates, stores and sends data to IronSourceAtom data pipeline
+ * @package IronSourceAtom
+ */
 class Tracker
 {
     private $taskWorkersCount = 20;
@@ -94,11 +93,12 @@ class Tracker
     }
 
     /**
-     * @param $data
-     * @param $stream
-     * @param string $authKey
+     * @param string $stream the name of IronSourceAtom stream to send data
+     * @param string $data data in JSON format to be send.
+     * @param string $authKey optional, pre shared IronSourceAtom stream auth key.
+     * If nothing given uses authKey given in constructor
      */
-    public function track($data, $stream, $authKey = "")
+    public function track($stream, $data,  $authKey = "")
     {
         if (empty($authKey)) {
             $authKey = $this->atom->getAuthKey();
@@ -112,7 +112,7 @@ class Tracker
     }
 
     /**
-     * @param $stream
+     * @param string $stream
      * @param string $authKey
      */
     private function flushStream($stream, $authKey)
@@ -134,7 +134,7 @@ class Tracker
     }
 
     /**
-     * @param $stream
+     * @param string $stream
      * @return bool
      */
     private function isToFlush($stream)
