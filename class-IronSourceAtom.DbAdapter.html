@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class IronSourceAtom\DbAdapter</title>
+
+	<link rel="stylesheet" href="resources/style.css?c2f33731c1948fbed7c333554678bfa68d4817da">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-IronSourceAtom.html">
+						IronSourceAtom					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-IronSourceAtom.Atom.html">Atom</a></li>
+				<li><a href="class-IronSourceAtom.Batch.html">Batch</a></li>
+				<li class="active"><a href="class-IronSourceAtom.DbAdapter.html">DbAdapter</a></li>
+				<li><a href="class-IronSourceAtom.DbHandler.html">DbHandler</a></li>
+				<li><a href="class-IronSourceAtom.Logger.html">Logger</a></li>
+				<li><a href="class-IronSourceAtom.Response.html">Response</a></li>
+				<li><a href="class-IronSourceAtom.Stream.html">Stream</a></li>
+				<li><a href="class-IronSourceAtom.Tracker.html">Tracker</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-IronSourceAtom.html" title="Summary of IronSourceAtom"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class DbAdapter</h1>
+
+
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-IronSourceAtom.html">IronSourceAtom</a><br>
+		
+
+			<b>Located at</b> <a href="source-class-IronSourceAtom.DbAdapter.html#12-235" title="Go to source code">DbAdapter.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#23-29" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			<p>DbAdapter constructor.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>DbAdapter constructor.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addEvent" id="_addEvent">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addEvent">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#31-58" title="Go to source code">addEvent</a>( <span>string <var>$stream</var></span>, <span>string <var>$data</var></span>, <span>string <var>$authKey</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd>IronSourceAtom stream</dd>
+					<dt><var>$data</var></dt>
+					<dd>data to store</dd>
+					<dt><var>$authKey</var></dt>
+					<dd>IronSourceAtom stream authKey</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getEvents" id="_getEvents">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-IronSourceAtom.Batch.html">IronSourceAtom\Batch</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getEvents">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#60-85" title="Go to source code">getEvents</a>( <span>string <var>$stream</var></span>, <span>integer <var>$limit</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd>IronSourceAtom stream</dd>
+					<dt><var>$limit</var></dt>
+					<dd>max number of return events in result batch</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-IronSourceAtom.Batch.html">IronSourceAtom\Batch</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="deleteEvents" id="_deleteEvents">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_deleteEvents">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#87-101" title="Go to source code">deleteEvents</a>( <span> <var>$stream</var></span>, <span> <var>$lastId</var></span> )</code>
+
+		<div class="description short">
+			<p>Remove events from records table that related to the given "table/destination"
+and with an id that less than or equal to the "lastId"</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Remove events from records table that related to the given "table/destination"
+and with an id that less than or equal to the "lastId"</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd></dd>
+					<dt><var>$lastId</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="create" id="_create">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_create">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#103-123" title="Go to source code">create</a>( )</code>
+
+		<div class="description short">
+			<p>Used at the moment of creation IronSourceAtom database</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Used at the moment of creation IronSourceAtom database</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="milliseconds" id="_milliseconds">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_milliseconds">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#125-133" title="Go to source code">milliseconds</a>( )</code>
+
+		<div class="description short">
+			<p>Returns current timestamp in milliseconds</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Returns current timestamp in milliseconds</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countEvents" id="_countEvents">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countEvents">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#135-147" title="Go to source code">countEvents</a>( <span>string <var>$stream</var></span> )</code>
+
+		<div class="description short">
+			<p>Conts number of records in db for given stream</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Conts number of records in db for given stream</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getByteSize" id="_getByteSize">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getByteSize">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#166-179" title="Go to source code">getByteSize</a>( <span> <var>$stream</var></span> )</code>
+
+		<div class="description short">
+			<p>Returns bytesize of data in given stream</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Returns bytesize of data in given stream</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="updateByteSize" id="_updateByteSize">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_updateByteSize">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#181-191" title="Go to source code">updateByteSize</a>( <span> <var>$stream</var></span>, <span> <var>$byte_size</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd></dd>
+					<dt><var>$byte_size</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getOldestCreationTime" id="_getOldestCreationTime">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getOldestCreationTime">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#207-218" title="Go to source code">getOldestCreationTime</a>( <span> <var>$stream</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getStreamsInfo" id="_getStreamsInfo">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getStreamsInfo">#</a>
+		<code><a href="source-class-IronSourceAtom.DbAdapter.html#220-234" title="Go to source code">getStreamsInfo</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array<br>of Streams
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="REPORTS_TABLE" id="REPORTS_TABLE">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-REPORTS_TABLE.html#14" title="Go to source code"><b>REPORTS_TABLE</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#REPORTS_TABLE" class="anchor">#</a>
+				<code><span class="php-quote">&quot;reports&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KEY_DATA" id="KEY_DATA">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-KEY_DATA.html#15" title="Go to source code"><b>KEY_DATA</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KEY_DATA" class="anchor">#</a>
+				<code><span class="php-quote">&quot;data&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KEY_STREAM" id="KEY_STREAM">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-KEY_STREAM.html#16" title="Go to source code"><b>KEY_STREAM</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KEY_STREAM" class="anchor">#</a>
+				<code><span class="php-quote">&quot;stream_name&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KEY_CREATED_AT" id="KEY_CREATED_AT">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-KEY_CREATED_AT.html#17" title="Go to source code"><b>KEY_CREATED_AT</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KEY_CREATED_AT" class="anchor">#</a>
+				<code><span class="php-quote">&quot;created_at&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="STREAMS_TABLE" id="STREAMS_TABLE">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-STREAMS_TABLE.html#18" title="Go to source code"><b>STREAMS_TABLE</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#STREAMS_TABLE" class="anchor">#</a>
+				<code><span class="php-quote">&quot;streams&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KEY_AUTH_KEY" id="KEY_AUTH_KEY">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-KEY_AUTH_KEY.html#19" title="Go to source code"><b>KEY_AUTH_KEY</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KEY_AUTH_KEY" class="anchor">#</a>
+				<code><span class="php-quote">&quot;auth_key&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KEY_BYTE_SIZE" id="KEY_BYTE_SIZE">
+		
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-constant-KEY_BYTE_SIZE.html#20" title="Go to source code"><b>KEY_BYTE_SIZE</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KEY_BYTE_SIZE" class="anchor">#</a>
+				<code><span class="php-quote">&quot;byte_size&quot;</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
