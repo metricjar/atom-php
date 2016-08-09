@@ -46,6 +46,43 @@ Then execute
 $ php composer.phar update
 $ php composer.phar install
 ```
+
+You may use SDK in two different ways:
+
+1. High level Tracker - contains SQLite base storage and tracks events based on certain parameters.
+2. Low level - contains 2 methods: putEvent() and putEvents() to send 1 event or a batch respectively.
+
+### Tracker usage
+
+```php
+<?php
+
+require_once '../vendor/autoload.php';
+use IronSourceAtom\Tracker;
+
+$tracker = new Tracker();
+$tracker->setAuthKey("");
+$tracker->setDebug(true);
+for ($i = 1; $i <= 10; $i++) {
+    $data = array("id" => $i, "message" => "message " . $i . " from tracker");
+    $tracker->track("ibtest", json_encode($data));
+}
+$tracker->flush();
+
+?>
+```
+
+The Tracker process:
+
+You can use track() method in order to track the events to an Atom Stream.
+The tracker accumulates events and flushes them when it meets one of the following conditions:
+ 
+1. Flush Interval is reached (default: 10 seconds).
+2. Bulk Length is reached (default: 4 events).
+3. Maximum Bulk size is reached (default: 64kB).
+
+The tracker stores events in a memory storage based on SQLite database.
+
 ### Using low level API methods
 
 ```php
