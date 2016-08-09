@@ -171,8 +171,10 @@ class Tracker
     {
         $stream = $this->dbAdapter->getStreamsInfo();
         foreach ($stream as $entity) {
+            if($this->dbAdapter->countEvents($entity->streamName)>0){
             Logger::log("\nFlushing by client demand into stream: " . $entity->streamName, $this->isDebug);
             $this->flushStream($entity->streamName, $entity->authKey);
+        }
         }
 
     }

@@ -4,17 +4,10 @@ use IronSourceAtom\Tracker;
 $tracker = new Tracker();
 $tracker->setAuthKey('I40iwPPOsG3dfWX30labriCg9HqMfL');
 $tracker->setDebug(true);
-$tracker->track("first message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("second message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("third message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("first message", "stream2");
-$tracker->track("fourth message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("fifth message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("second message", "stream2");
-$tracker->track("first message", "stream3");
-$tracker->track("sixth message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("eighth message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("ninth message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("tenth message", "sdkdev_sdkdev.public.atomtestkey");
-$tracker->track("eleventh message", "sdkdev_sdkdev.public.atomtestkey");
+for ($i = 1; $i <= 10; $i++){
+    $tracker->track("ibtest", "{name: iron".$i.", last_name: source}");
+}
+
 $tracker->flush();
+
+?>
