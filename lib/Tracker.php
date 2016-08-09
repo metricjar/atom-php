@@ -13,12 +13,11 @@ require 'Logger.php';
  */
 class Tracker
 {
-    private $taskWorkersCount = 20;
-    private $taskPoolSize = 10000;
+
     private $dbAdapter;
-    private $bulkSizeByte = 65536;
+    private $bulkSizeByte = 65536;//64 kB
     private $bulkSize = 4;
-    private $flushInterval = 10000;
+    private $flushInterval = 10000;//10 seconds
     private $isDebug = false;
 
 
@@ -58,22 +57,6 @@ class Tracker
     public function setFlushInterval($flushInterval)
     {
         $this->flushInterval = $flushInterval;
-    }
-
-    /**
-     * @param int $taskWorkersCount
-     */
-    public function setTaskWorkersCount($taskWorkersCount)
-    {
-        $this->taskWorkersCount = $taskWorkersCount;
-    }
-
-    /**
-     * @param int $taskPoolSize
-     */
-    public function setTaskPoolSize($taskPoolSize)
-    {
-        $this->taskPoolSize = $taskPoolSize;
     }
 
     /**
