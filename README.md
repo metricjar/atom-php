@@ -4,7 +4,7 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![Docs][docs-image]][docs-url]
 
-Atom-Ruby is the official ironSource.atom SDK for the PHP programming language.
+atom-php is the official ironSource.atom SDK for the PHP programming language.
 
 - [Signup](https://atom.ironsrc.com/#/signup)
 - [Documentation][docs-url]
