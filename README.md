@@ -8,48 +8,53 @@ atom-php is the official ironSource.atom SDK for the PHP programming language.
 
 - [Signup](https://atom.ironsrc.com/#/signup)
 - [Documentation][docs-url]
-- [Installation](#Installation)
-- [Sending an event](#Using)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Change Log](#chagne-log)
+- [Example](#example)
 
 ## Installation
-Using Composer is the recommended way to install the Atom SDK for PHP.
+
+Using [Composer](https://getcomposer.org/) is the recommended way to install the Atom SDK for PHP.
 
  1)  Install Composer
 
 ```bash
-    curl -sS https://getcomposer.org/installer | php
+curl -sS https://getcomposer.org/installer | php
 ```
 
  2)  Run the Composer command to install the latest stable version of the SDK:
     
 ```bash
-    php composer.phar require ironsourceatom/atom-php
+php composer.phar require ironsourceatom/atom-php
 ```
 
  3)  Require Composer's autoloader:
 
 ```php
-    <?php
+ <?php
     require 'vendor/autoload.php';
 ```
 
-You can find out more on how to install Composer, configure autoloading, and other best-practices for defining dependencies at getcomposer.org.
+You can find out more on how to install Composer, configure auto loading and other best-practices  
+for defining dependencies at the [Composer website](https://getcomposer.org/)
 
 Also you can add the following into your composer.json
 ```json
-"require": {
-		"ironsourceatom/atom-php": ">=1.0"
-	}
+"require": { "ironsourceatom/atom-php": ">=1.0" }
 ```
+
 Then execute
 ```bash
 $ php composer.phar update
 $ php composer.phar install
 ```
 
+## Usage
+
 You may use SDK in two different ways:
 
-1. High level Tracker - contains SQLite base storage and tracks events based on certain parameters.
+1. High level Tracker - contains SQLite data base storage and tracks events based on certain parameters.
 2. Low level - contains 2 methods: putEvent() and putEvents() to send 1 event or a batch respectively.
 
 ### Tracker usage
@@ -83,7 +88,7 @@ The tracker accumulates events and flushes them when it meets one of the followi
 
 The tracker stores events in a memory storage based on SQLite database.
 
-### Using low level API methods
+### Low Level methods
 
 ```php
 <?php
@@ -98,17 +103,27 @@ The tracker stores events in a memory storage based on SQLite database.
 ?>
 ```
 
-### Example
+## Change Log
+
+### v1.1.0
+- Added Tracker
+- Added Composer support
+- Added SQLite db support for tracker storage
+
+### v1.0.0
+- Basic features: putEvent & putEvents functionalities
+
+## Example
 
 You can use our [example][example-url] for sending data to Atom:
 
 
-[example-url]: https://github.com/ironSource/atom-php/tree/feature/isa-454/example
+[example-url]: example
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-url]: LICENSE.txt
-[travis-image]: https://travis-ci.org/ironSource/atom-php.svg?branch=feature%2Fisa-454
+[license-url]: LICENSE
+[travis-image]: https://travis-ci.org/ironSource/atom-php.svg?branch=master
 [travis-url]: https://travis-ci.org/ironSource/atom-php
-[coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-php/badge.svg?branch=feature%2Fisa-454
-[coveralls-url]: https://coveralls.io/github/ironSource/atom-php/?branch=feature%2Fisa-454
+[coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-php/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/ironSource/atom-php/?branch=master
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://ironsource.github.io/atom-php/
