@@ -1,6 +1,4 @@
 <?php
-/**
- */
 
 
 namespace IronSourceAtom;
@@ -8,7 +6,7 @@ namespace IronSourceAtom;
 
 class AtomTest extends \PHPUnit_Framework_TestCase
 {
-    
+
     /**
      * @expectedException InvalidArgumentException
      */
@@ -80,7 +78,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
         $atom = new Atom("dd");
         $atom->putEvents('fff', '');
     }
-    
+
     /**
      * @expectedException InvalidArgumentException
      */
