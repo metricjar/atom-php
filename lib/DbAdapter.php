@@ -5,12 +5,9 @@
  * Date: 8/2/16
  * Time: 4:48 PM
  */
-
 namespace IronSourceAtom;
 
-
-class DbAdapter
-{
+class DbAdapter {
     const REPORTS_TABLE = "reports";
     const KEY_DATA = "data";
     const KEY_STREAM = "stream_name";
@@ -23,8 +20,7 @@ class DbAdapter
     /**
      * DbAdapter constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->db = new DbHandler();
     }
 
@@ -33,13 +29,11 @@ class DbAdapter
      * @param string $data data to store
      * @param string $authKey IronSourceAtom stream authKey
      */
-    public function addEvent($stream, $data, $authKey)
-    {
-
-
+    public function addEvent($stream, $data, $authKey) {
         $insertStmt = $this->db->prepare("INSERT INTO " . self::REPORTS_TABLE .
             " (" . self::KEY_STREAM . ", " . self::KEY_DATA . ", " . self::KEY_CREATED_AT . "
             ) VALUES (:stream, :data, :created_at)");
+
         $insertStmt->bindValue(':stream', $stream, SQLITE3_TEXT);
         $insertStmt->bindValue(':data', $data, SQLITE3_TEXT);
         $insertStmt->bindValue(':created_at', $this->milliseconds());
@@ -54,7 +48,6 @@ class DbAdapter
         $byte_size = $this->getByteSize($stream);
         $byte_size += mb_strlen($data, '8bit');
         $this->updateByteSize($stream, $byte_size);
-
     }
 
     /**
@@ -62,13 +55,13 @@ class DbAdapter
      * @param integer $limit max number of return events in result batch
      * @return Batch
      */
-    public function getEvents($stream, $limit)
-    {
+    public function getEvents($stream, $limit) {
         $events = array();
         $event_ids = array();
         $stmt = $this->db->prepare("SELECT * FROM " . self::REPORTS_TABLE
             . " WHERE " . self::KEY_STREAM . " = :stream ORDER BY " . self::KEY_CREATED_AT . " ASC"
             . " LIMIT :limit");
+
         $stmt->bindParam(':stream', $stream);
         $stmt->bindParam(':limit', $limit);
         $result = $stmt->execute();
@@ -78,10 +71,10 @@ class DbAdapter
             array_push($events, $row[self::KEY_DATA]);
             $byteSize += mb_strlen($row[self::KEY_DATA], '8bit');
         }
+
         $lastId = end($event_ids);
         $batch = new Batch($lastId, $byteSize, $events);
         return $batch;
-
     }
 
     /**
@@ -90,21 +83,17 @@ class DbAdapter
      * @param $stream
      * @param $lastId
      */
-    public function deleteEvents($stream, $lastId)
-    {
-
+    public function deleteEvents($stream, $lastId) {
         $deleteStmt = $this->db->prepare("DELETE FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream AND " . self::REPORTS_TABLE . "_id <= :event_id");
         $deleteStmt->bindParam(':stream', $stream);
         $deleteStmt->bindParam(':event_id', $lastId);
         $deleteStmt->execute();
-
     }
 
     /**
      * Used at the moment of creation IronSourceAtom database
      */
-    public function create()
-    {
+    public function create() {
         print("Creating the IronSourceAtom database");
 
         $reportQuery = 'CREATE TABLE IF NOT EXISTS ' . self::REPORTS_TABLE . ' (' . self::REPORTS_TABLE . '_id INTEGER PRIMARY KEY AUTOINCREMENT,' .
@@ -118,16 +107,13 @@ class DbAdapter
 
         $indexQuery = "CREATE INDEX IF NOT EXISTS time_idx ON " . self::REPORTS_TABLE . " (" . self::KEY_CREATED_AT . ");";
         $ret = $this->db->exec($indexQuery);
-
-
     }
 
     /**
      * Returns current timestamp in milliseconds
      * @return integer
      */
-    public function milliseconds()
-    {
+    public function milliseconds() {
         $mt = explode(' ', microtime());
         return $mt[1] * 1000 + round($mt[0] * 1000);
     }
@@ -137,8 +123,7 @@ class DbAdapter
      * @param string $stream
      * @return integer
      */
-    public function countEvents($stream)
-    {
+    public function countEvents($stream) {
         $countEventsStmt = $this->db->prepare("SELECT COUNT(*) AS NUM FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . "= :stream");
         $countEventsStmt->bindParam(':stream', $stream);
         $eventsCount = $countEventsStmt->execute();
@@ -152,11 +137,11 @@ class DbAdapter
      * @param string $authKey
      * @param integer $byteSize
      */
-    private function addStream($stream, $authKey, $byteSize)
-    {
+    private function addStream($stream, $authKey, $byteSize) {
         $insertStmt = $this->db->prepare("INSERT INTO " . self::STREAMS_TABLE .
             " (" . self::KEY_STREAM . ", " . self::KEY_AUTH_KEY . ", " . self::KEY_BYTE_SIZE . "
             ) VALUES (:stream, :auth, :byte_size)");
+
         $insertStmt->bindValue(':stream', $stream, SQLITE3_TEXT);
         $insertStmt->bindValue(':auth', $authKey, SQLITE3_TEXT);
         $insertStmt->bindValue(':byte_size', $byteSize, SQLITE3_INTEGER);
@@ -168,13 +153,14 @@ class DbAdapter
      * @param $stream
      * @return integer
      */
-    public function getByteSize($stream)
-    {
+    public function getByteSize($stream) {
         $getSizeStmt = $this->db->prepare("SELECT " . self::KEY_BYTE_SIZE . " FROM " . self::STREAMS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+
         $getSizeStmt->bindValue(':stream', $stream);
         $raw = $getSizeStmt->execute();
         $result = $raw->fetchArray();
         $byte_size = $result[self::KEY_BYTE_SIZE];
+
         return $byte_size;
     }
 
@@ -182,9 +168,9 @@ class DbAdapter
      * @param $stream
      * @param $byte_size
      */
-    public function updateByteSize($stream, $byte_size)
-    {
+    public function updateByteSize($stream, $byte_size) {
         $updateStmt = $this->db->prepare("UPDATE " . self::STREAMS_TABLE . " SET " . self::KEY_BYTE_SIZE . " = :byte_size WHERE " . self::KEY_STREAM . " = :stream");
+
         $updateStmt->bindValue(':byte_size', $byte_size);
         $updateStmt->bindValue(':stream', $stream);
         $updateStmt->execute();
@@ -194,13 +180,14 @@ class DbAdapter
      * @param $stream
      * @return mixed
      */
-    private function countStreams($stream)
-    {
+    private function countStreams($stream) {
         $countStreamsStmt = $this->db->prepare("SELECT COUNT(*)  AS NUM FROM " . self::STREAMS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+
         $countStreamsStmt->bindValue(':stream', $stream);
         $raw = $countStreamsStmt->execute();
         $result = $raw->fetchArray();
         $streamsCount = $result['NUM'];
+
         return $streamsCount;
     }
 
@@ -208,20 +195,20 @@ class DbAdapter
      * @param $stream
      * @return integer
      */
-    public function getOldestCreationTime($stream)
-    {
+    public function getOldestCreationTime($stream) {
         $timeStmt = $this->db->prepare("SELECT MIN(" . self::KEY_CREATED_AT . ")  AS start_time FROM " . self::REPORTS_TABLE . " WHERE " . self::KEY_STREAM . " = :stream");
+
         $timeStmt->bindValue(':stream', $stream);
         $raw = $timeStmt->execute();
         $result = $raw->fetchArray();
+
         return $result['start_time'];
     }
 
     /**
      * @return array of Streams
      */
-    public function getStreamsInfo()
-    {
+    public function getStreamsInfo() {
         $streamsInfo = array();
         $stmt = $this->db->prepare("SELECT * FROM " . self::STREAMS_TABLE);
         $result = $stmt->execute();
@@ -229,8 +216,8 @@ class DbAdapter
             $entity = new Stream($row[self::KEY_STREAM], $row[self::KEY_AUTH_KEY]);
             array_push($streamsInfo, $entity);
         }
-        return $streamsInfo;
 
+        return $streamsInfo;
     }
 }
 
@@ -238,8 +225,7 @@ class DbAdapter
  * Class Stream represents stream-authKey pair map
  * @package IronSourceAtom
  */
-class Stream
-{
+class Stream {
     public $streamName;
     public $authKey;
 
@@ -248,13 +234,10 @@ class Stream
      * @param $streamName
      * @param $authKey
      */
-    public function __construct($streamName, $authKey)
-    {
+    public function __construct($streamName, $authKey) {
         $this->streamName = $streamName;
         $this->authKey = $authKey;
     }
-
-
 }
 
 
@@ -264,8 +247,7 @@ class Stream
  * with its lastId to acknowledge them later
  * @package IronSourceAtom
  */
-class Batch
-{
+class Batch {
     /**
      * @var string
      */
@@ -281,35 +263,30 @@ class Batch
      */
     private $events;
 
-    public function __construct($lastId, $byteSize, $events)
-    {
+    public function __construct($lastId, $byteSize, $events) {
         $this->lastId = $lastId;
         $this->byteSize = $byteSize;
         $this->events = $events;
     }
 
-
     /**
      * @return string
      */
-    public function getLastId()
-    {
+    public function getLastId() {
         return $this->lastId;
     }
 
     /**
      * @return int
      */
-    public function getByteSize()
-    {
+    public function getByteSize() {
         return $this->byteSize;
     }
 
     /**
      * @return string
      */
-    public function getEvents()
-    {
+    public function getEvents() {
         return $this->events;
     }
 }
@@ -318,11 +295,8 @@ class Batch
  * Class DbHandler
  * @package IronSourceAtom
  */
-class DbHandler extends \SQLite3
-{
-    function __construct()
-    {
+class DbHandler extends \SQLite3 {
+    function __construct() {
         $this->open('ironsourceatom.db');
     }
-
 }

@@ -11,67 +11,56 @@ require 'Logger.php';
  * Aggregates, stores and sends data to IronSourceAtom data pipeline
  * @package IronSourceAtom
  */
-class Tracker
-{
-
+class Tracker {
     private $dbAdapter;
     private $bulkSizeByte = 65536;//64 kB
     private $bulkSize = 4;
     private $flushInterval = 10000;//10 seconds
     private $isDebug = false;
 
-
     /**
      * Tracker constructor.
      * @param string $url
      * @param string $authKey
      */
-    public function __construct($authKey = "", $url = "http://track.atom-data.io/")
-    {
+    public function __construct($authKey = "", $url = "http://track.atom-data.io/") {
         $this->atom = new Atom($authKey, $url);
         $this->dbAdapter = new DbAdapter();
         $this->dbAdapter->create();
-
     }
-
 
     /**
      * @param int $bulkSizeByte
      */
-    public function setBulkSizeByte($bulkSizeByte)
-    {
+    public function setBulkSizeByte($bulkSizeByte) {
         $this->bulkSizeByte = $bulkSizeByte;
     }
 
     /**
      * @param int $bulkSize
      */
-    public function setBulkSize($bulkSize)
-    {
+    public function setBulkSize($bulkSize) {
         $this->bulkSize = $bulkSize;
     }
 
     /**
      * @param int $flushInterval
      */
-    public function setFlushInterval($flushInterval)
-    {
+    public function setFlushInterval($flushInterval) {
         $this->flushInterval = $flushInterval;
     }
 
     /**
      * @param string $url
      */
-    public function setUrl($url)
-    {
+    public function setUrl($url) {
         $this->atom->setUrl($url);
     }
 
     /**
      * @param string $authKey
      */
-    public function setAuthKey($authKey)
-    {
+    public function setAuthKey($authKey) {
         $this->atom->setAuthKey($authKey);
     }
 
@@ -81,8 +70,7 @@ class Tracker
      * @param string $authKey optional, pre shared IronSourceAtom stream auth key.
      * If nothing given uses authKey given in constructor
      */
-    public function track($stream, $data, $authKey = "")
-    {
+    public function track($stream, $data, $authKey = "") {
         if (empty($authKey)) {
             $authKey = $this->atom->getAuthKey();
         }
@@ -98,8 +86,7 @@ class Tracker
      * @param string $stream
      * @param string $authKey
      */
-    private function flushStream($stream, $authKey)
-    {
+    private function flushStream($stream, $authKey) {
         $batch = $this->dbAdapter->getEvents($stream, $this->bulkSize);
         $data = json_encode($batch->getEvents());
 
@@ -120,8 +107,7 @@ class Tracker
      * @param string $stream
      * @return bool
      */
-    private function isToFlush($stream)
-    {
+    private function isToFlush($stream) {
         if ($this->dbAdapter->getByteSize($stream) >= $this->bulkSizeByte) {
             Logger::log("\nFlushing by bulkSizeByte into stream: " . $stream, $this->isDebug);
             return true;
@@ -142,16 +128,14 @@ class Tracker
     /**
      * @param boolean $isDebug
      */
-    public function setDebug($isDebug)
-    {
+    public function setDebug($isDebug) {
         $this->isDebug = $isDebug;
     }
 
     /**
      * Flush all data buffer to server immediately
      */
-    public function flush()
-    {
+    public function flush() {
         $stream = $this->dbAdapter->getStreamsInfo();
         foreach ($stream as $entity) {
             if ($this->dbAdapter->countEvents($entity->streamName) > 0) {
@@ -159,9 +143,7 @@ class Tracker
                 $this->flushStream($entity->streamName, $entity->authKey);
             }
         }
-
     }
-
 }
 
 

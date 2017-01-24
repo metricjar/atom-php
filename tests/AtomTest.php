@@ -1,17 +1,13 @@
 <?php
 
-
 namespace IronSourceAtom;
 
-
-class AtomTest extends \PHPUnit_Framework_TestCase
-{
+class AtomTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventNullStream()
-    {
+    public function testPutEventNullStream() {
         $atom = new Atom("dd");
         $atom->putEvent(null, 'fff');
     }
@@ -19,8 +15,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventEmptyStream()
-    {
+    public function testPutEventEmptyStream() {
         $atom = new Atom("dd");
         $atom->putEvent('', 'fff');
     }
@@ -28,8 +23,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventNullData()
-    {
+    public function testPutEventNullData() {
         $atom = new Atom("dd");
         $atom->putEvent('fff', null);
     }
@@ -37,8 +31,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventEmptyData()
-    {
+    public function testPutEventEmptyData() {
         $atom = new Atom("dd");
         $atom->putEvent('fff', '');
     }
@@ -46,8 +39,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventsNullStream()
-    {
+    public function testPutEventsNullStream() {
         $atom = new Atom("dd");
         $atom->putEvents(null, 'fff');
     }
@@ -55,8 +47,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventsEmptyStream()
-    {
+    public function testPutEventsEmptyStream() {
         $atom = new Atom("dd");
         $atom->putEvents('', 'fff');
     }
@@ -64,8 +55,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventsNullData()
-    {
+    public function testPutEventsNullData() {
         $atom = new Atom("dd");
         $atom->putEvents('fff', null);
     }
@@ -73,8 +63,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventsEmptyData()
-    {
+    public function testPutEventsEmptyData() {
         $atom = new Atom("dd");
         $atom->putEvents('fff', '');
     }
@@ -82,11 +71,8 @@ class AtomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPutEventsNotValidArray()
-    {
+    public function testPutEventsNotValidArray() {
         $atom = new Atom("dd");
         $atom->putEvents('fff', 'ffff');
     }
-
-
 }

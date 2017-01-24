@@ -8,8 +8,7 @@ require 'Response.php';
  * Class Atom low level API class, supports putEvent() and putEvents();
  * @package IronSourceAtom
  */
-class Atom
-{
+class Atom {
     private $authKey;
     private $url;
 
@@ -19,11 +18,9 @@ class Atom
      * @param string $url optional, url of IronSourceAtom server.
      * If nothing given uses http://track.atom-data.io/
      */
-    public function __construct($authKey = "", $url = "http://track.atom-data.io/")
-    {
+    public function __construct($authKey = "", $url = "http://track.atom-data.io/") {
         $this->authKey = $authKey;
         $this->url = $url;
-
     }
 
     /**
@@ -35,9 +32,7 @@ class Atom
      * If nothing given uses authKey given in Atom constructor
      * @return Response response from server
      */
-
-    public function putEvent($stream, $data, $authKey = "")
-    {
+    public function putEvent($stream, $data, $authKey = "") {
         if ($authKey == null) {
             $authKey = $this->authKey;
         }
@@ -69,8 +64,7 @@ class Atom
      * If nothing given uses authKey given in Atom constructor
      * @return Response from server
      */
-    public function putEvents($stream, $data, $authKey = "")
-    {
+    public function putEvents($stream, $data, $authKey = "") {
         if (empty($authKey)) {
             $authKey = $this->authKey;
         }
@@ -97,24 +91,21 @@ class Atom
     /**
      * @return string
      */
-    public function getAuthKey()
-    {
+    public function getAuthKey() {
         return $this->authKey;
     }
 
     /**
      * @param string $authKey
      */
-    public function setAuthKey($authKey)
-    {
+    public function setAuthKey($authKey) {
         $this->authKey = $authKey;
     }
 
     /**
      * @param string $url
      */
-    public function setUrl($url)
-    {
+    public function setUrl($url) {
         $this->url = $url;
     }
     // @codeCoverageIgnoreEnd
@@ -125,9 +116,7 @@ class Atom
      * @return Response
      * @codeCoverageIgnore
      */
-    private function post($content, $url)
-    {
-
+    private function post($content, $url) {
         $headers = 'Content-Type: application/json,
                     x-ironsource-atom-sdk-type: atom-php,
                     x-ironsource-atom-sdk-version: 1.0.0';
@@ -157,15 +146,12 @@ class Atom
         }
         $resultHeaders = $this->parseHeaders($http_response_header);
         return new Response($resultHeaders[0], $resultHeaders['response_code']);
-
     }
 
     /**
      * @codeCoverageIgnore
      */
-    private function makeAuth($data, $authKey)
-    {
-
+    private function makeAuth($data, $authKey) {
         return hash_hmac('sha256', $data, $authKey);
     }
 
@@ -175,8 +161,7 @@ class Atom
      * @return array
      * @codeCoverageIgnore
      */
-    private function parseHeaders($headers)
-    {
+    private function parseHeaders($headers) {
         $head = array();
         foreach ($headers as $k => $v) {
             $t = explode(':', $v, 2);
@@ -190,5 +175,4 @@ class Atom
         }
         return $head;
     }
-
 }
