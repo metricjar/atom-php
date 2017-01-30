@@ -94,7 +94,7 @@ class DbAdapter {
      * Used at the moment of creation IronSourceAtom database
      */
     public function create() {
-        print("Creating the IronSourceAtom database");
+        print("Creating the IronSourceAtom database\n");
 
         $reportQuery = 'CREATE TABLE IF NOT EXISTS ' . self::REPORTS_TABLE . ' (' . self::REPORTS_TABLE . '_id INTEGER PRIMARY KEY AUTOINCREMENT,' .
             self::KEY_DATA . ' STRING NOT NULL, ' . self::KEY_STREAM . ' STRING NOT NULL, ' . self::KEY_CREATED_AT . ' INTEGER NOT NULL);';
