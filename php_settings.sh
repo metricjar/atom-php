@@ -9,4 +9,6 @@ sudo apt-get install php-sqlite3
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 
+composer require aws/aws-sdk-php
+
 

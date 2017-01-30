@@ -3,6 +3,8 @@
 require_once '../vendor/autoload.php';
 
 use IronSourceAtom\Tracker;
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
 
 foreach($argv as $value) {
   echo "$value\n";
@@ -46,6 +48,8 @@ $data_key_increment = $argv[7];
 
 $flush_interval = $argv[8]; // in milliseconds
 
+$is_using_s3 = $argv[9];
+
 $data_types = json_decode($send_data_types, true);
 
 $tracker = new Tracker();
@@ -57,31 +61,56 @@ $tracker->setFlushInterval((int)$flush_interval);
 
 $tracker->setDebug(true);
 
-print "Event send count: $event_count\n";
+if (strtolower($is_using_s3) == "yes") {
+	$bucket = '*** Your Bucket Name ***';
+	$keyname = '*** Your Object Key ***';
+	// $filepath should be absolute path to a file on disk						
+	$filepath = '*** Your File Path ***';
 
-$prev_data = [];
-$prev_data[$data_key_increment] = 0;
+	// Instantiate the client.
+	$s3 = S3Client::factory();
 
-$event_count_int = (int)$event_count;
+	try {
+	    // Get the object
+	    $result = $s3->getObject(array(
+	        'Bucket' => $bucket,
+	        'Key'    => $keyname
+	    ));
 
-for ($index = 0; $index < $event_count_int; $index++) {
-	$data = [];
+	    // Display the object in the browser
+	    echo $result['Body'];
+	} catch (S3Exception $e) {
+	    echo $e->getMessage() . "\n";
+	}
+} else {
+	print "Event send count: $event_count\n";
 
-	foreach ($data_types as $key => $value) {
-		$is_inc = ($data_key_increment == $key);
-		$data_value = NULL;
-		if ($is_inc) {
-			$prev_data[$data_key_increment] = GenerateData($value, $is_inc, $prev_data[$data_key_increment]);
-			$data_value = $prev_data[$data_key_increment];
-		} else {
-			$data_value = GenerateData($value);
+	$prev_data = [];
+	$prev_data[$data_key_increment] = 0;
+
+	$event_count_int = (int)$event_count;
+
+	for ($index = 0; $index < $event_count_int; $index++) {
+		$data = [];
+
+		foreach ($data_types as $key => $value) {
+			$is_inc = ($data_key_increment == $key);
+			$data_value = NULL;
+			if ($is_inc) {
+				$prev_data[$data_key_increment] = GenerateData($value, $is_inc, $prev_data[$data_key_increment]);
+				$data_value = $prev_data[$data_key_increment];
+			} else {
+				$data_value = GenerateData($value);
+			}
+
+			$data[$key] = $data_value;
 		}
 
-		$data[$key] = $data_value;
+		$tracker->track($stream, json_encode($data));
 	}
 
-	$tracker->track($stream, json_encode($data));
+	$tracker->flush();
 }
 
-$tracker->flush();
+
 
