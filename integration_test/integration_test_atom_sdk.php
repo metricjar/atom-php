@@ -68,8 +68,11 @@ if (strtolower($read_file) == "yes") {
 	$all_data_str = file_get_contents($file_path);
 	$data_list = explode("\n", $all_data_str);
 
-	foreach($data_str as $data_list) {
-		$tracker->track($stream, json_encode($data_str));
+	foreach($data_list as $data_str) {
+		$json_data = json_decode($data_str, true);
+
+		$tracker->setAuthKey($json_data['auth']);
+		$tracker->track($json_data['stream'], $json_data['data']);
 	}
 
 	$tracker->flush();
