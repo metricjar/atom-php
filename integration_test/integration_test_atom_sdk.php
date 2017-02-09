@@ -1,4 +1,5 @@
 <?php
+// php integration_test_atom_sdk.php "sdkdev_sdkdev.public.g8y3etest" "I40iwPPOsG3dfWX30labriCg9HqMfL" 1000 64 65536 "" "" 10000 "yes" "output"
 
 require_once '../vendor/autoload.php';
 
@@ -48,7 +49,8 @@ $data_key_increment = $argv[7];
 
 $flush_interval = $argv[8]; // in milliseconds
 
-$is_using_s3 = $argv[9];
+$read_file = $argv[9];
+$file_path = $argv[10];
 
 $data_types = json_decode($send_data_types, true);
 
@@ -61,27 +63,16 @@ $tracker->setFlushInterval((int)$flush_interval);
 
 $tracker->setDebug(true);
 
-if (strtolower($is_using_s3) == "yes") {
-	$bucket = '*** Your Bucket Name ***';
-	$keyname = '*** Your Object Key ***';
-	// $filepath should be absolute path to a file on disk						
-	$filepath = '*** Your File Path ***';
+if (strtolower($read_file) == "yes") {
+	print "Read data from file: $file_path\n";
+	$all_data_str = file_get_contents($file_path);
+	$data_list = explode("\n", $all_data_str);
 
-	// Instantiate the client.
-	$s3 = S3Client::factory();
-
-	try {
-	    // Get the object
-	    $result = $s3->getObject(array(
-	        'Bucket' => $bucket,
-	        'Key'    => $keyname
-	    ));
-
-	    // Display the object in the browser
-	    echo $result['Body'];
-	} catch (S3Exception $e) {
-	    echo $e->getMessage() . "\n";
+	foreach($data_str as $data_list) {
+		$tracker->track($stream, json_encode($data_str));
 	}
+
+	$tracker->flush();
 } else {
 	print "Event send count: $event_count\n";
 

@@ -4,7 +4,8 @@ services:
     build: .
     command: bash -c "sh ./integration_test/run_integration.sh"
     environment:
-      USING_S3: "no" # yes - false
+      READ_FILE: "no" # yes - true
+      FILE_PATH: "output"
       STREAM: "sdkdev_sdkdev.public.g8y3etest"
       AUTH: "I40iwPPOsG3dfWX30labriCg9HqMfL"
       BULK_SIZE: 64
